@@ -9,5 +9,7 @@ Pre reqisites
 1. Redis: We are using redis to cache the scraped documents that will be feeded to NLP pipelines.
 Need redis for caching.
 
-Steps: install wget if u dont have. brew install wget --with-libressl
-follow http://redis.io/topics/quickstart
+Steps: install wget if u dont have. 
+\>> brew install wget --with-libressl
+
+then follow http://redis.io/topics/quickstart
