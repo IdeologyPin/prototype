@@ -25,8 +25,18 @@ class Relegence:
     '''
 
     class __Trending:
+        __req_base = _HOST + 'trending/'
         def __init__(self, outer):
+            self.outer=outer
             self.topics = []
+
+        @cached
+        def by_subject(self, subject_id, params={}):
+            '''
+                params={'withDocs': True}
+            '''
+            p = merge_dicts(self.outer._def_params, params);
+            return to_json(requests.get(self.__req_base+'/'+subject_id, params=p))
 
     '''
     '''
