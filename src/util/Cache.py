@@ -11,7 +11,8 @@ def cached(func):
              return _cache[key]
          else:
             ret=func(*args, **kwargs);
-            _cache.set(key,ret)
+            if(ret!=None):
+                _cache.set(key,ret)
             return ret
      return wrapper
 
