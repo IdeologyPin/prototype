@@ -60,7 +60,7 @@ class Relegence:
             # return to_json(resp)
             return resp
 
-    class __Taxenomy:
+    class __Taxonomy:
         __req_base = _HOST + '/taxobrowser/'
 
         def __init__(self, outer):
