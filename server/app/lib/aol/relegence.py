@@ -36,8 +36,8 @@ class Relegence:
     '''
 
     class __Stories:
-        __req_base = _HOST_STAGING + 'stories/'
-
+        # __req_base = _HOST_STAGING + 'stories/'
+        __req_base = _HOST + 'stories/'
         def __init__(self, outer):
             self.outer = outer
 
