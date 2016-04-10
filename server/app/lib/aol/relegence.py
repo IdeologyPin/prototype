@@ -13,13 +13,16 @@ class Relegence:
     '''
     Religence API client
     documentation for endpoints are at http://www.aolpublishers.com/support/documentation/relegence/services/
+
+    http://www.aolpublishers.com/support/documentation/relegence/services/stories.md
+    aol/aol
     '''
 
     def __init__(self, API_KEY=_API_KEY):
         self.API_KEY = API_KEY
         self.stories = self.__Stories(self)
         self.trending = self.__Trending(self)
-        self.taxenomy = self.__Taxenomy(self)
+        self.taxonomy = self.__Taxonomy(self)
         self._def_params = {'apikey': self.API_KEY}
 
     '''
@@ -39,16 +42,16 @@ class Relegence:
             self.outer = outer
 
         # @cached
-        def by_subject(self, subject_id, get_body=False, params={}):
+        def by_subject(self, subject_id, num_articles=100, params={}):
             '''
-                params={"withDocs"=True}
+                params={"numDocs"=100}
+                125192054 
             '''
-            if get_body:
-                params.add(withDocs=True)
+            params['withDocs'] = num_articles
             p = merge_dicts(self.outer._def_params, params);
             resp = "hello world"
             try:
-                resp = to_json(requests.get(self.__req_base + str(subject_id), params=p, timeout=5))
+                resp = to_json(requests.get(self.__req_base + str(subject_id), params=p, timeout=10))
                 # resp = requests.get(self.__req_base + '/' + str(subject_id), params=p, timeout=5).json()
             except TypeError:
                 return "TypeError"
