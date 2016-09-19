@@ -1,15 +1,5 @@
-# prototype
-prototype code
+Please ```pip install requirements.txt```
 
-Using jupyter drive to store the notebooks
-https://github.com/jupyter/jupyter-drive
-
-
-Pre reqisites
-1. Redis: We are using redis to cache the scraped documents that will be feeded to NLP pipelines.
-Need redis for caching.
-
-Steps: install wget if u dont have. 
-\>> brew install wget --with-libressl
-
-then follow http://redis.io/topics/quickstart
+Preferably, use a virtual environment (requires v15.0.1):
+ - move to folder that has no spaces in the path
+```virtualenv --no-site-packages povmap```
