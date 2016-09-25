@@ -3,7 +3,7 @@ from mongoengine import *
 connect('perspect_db')
 
 class Meta(Document):
-    rel_subj_sync=DateTimeField()
+    r_subject_synced=LongField()
 
     @classmethod
     def get_data(cls):
@@ -29,22 +29,50 @@ class Entity(Document):
     pass
 
 class Story(Document):
-    pass
+    story_id=LongField(primary_key=True)
+    title=StringField();
+    mag_score=IntField();
+    num_total_docs=IntField();
+    num_original_docs=IntField();
 
-class Aritcle(Document):
-    pass
+    @classmethod
+    def find_by_id(cls, story_id):
+        return Story.objects(story_id=story_id).first()
 
+class Article(Document):
+    article_id = StringField(primary_key=True);
+    story=ReferenceField(Story);
+    source=StringField();
+    link=StringField();
+    tilte=StringField();
+    snippet=StringField();
+    file_name=StringField();
+    published=DateTimeField();
+    author=StringField();
+
+    @classmethod
+    def find_by_story(cls, story):
+        Article.objects(story=story)
 
 
 class Centroid(EmbeddedDocument):
-    pass
-
-class Clustering(Document):
+    id=IntField()
     name=StringField()
-    clusters=ListField(EmbeddedDocumentField(Centroid))
-    articles=MapField() #cluster_id -> ArticleNode list
-
+    label=StringField()
+    vector=ListField(FloatField())
 
 
 class ArticleNode(EmbeddedDocument):
-    article=ReferenceField('Article')
+    article = ReferenceField('Article')
+    label = StringField()
+    vector = ListField(FloatField())
+    scores = MapField(FloatField()) #centroid_id -> float
+
+class Clustering(Document):
+    name=StringField()
+    method=StringField()
+    clusters=ListField(EmbeddedDocumentField(Centroid))
+    articles= ListField(EmbeddedDocumentField(ArticleNode))
+
+
+

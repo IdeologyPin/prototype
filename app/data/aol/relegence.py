@@ -1,6 +1,5 @@
 import requests
 import json
-from util.Cache import cached
 
 _API_KEY = 'V7lmZgPn7NGdEYSp9DGA8l1AsK5zRy8I'
 _HOST = 'http://api.relegence.com/'
@@ -30,7 +29,7 @@ class Relegence:
             self.outer=outer
             self.topics = []
 
-        @cached
+        # @cached
         def by_subject(self, subject_id, params={}):
             '''
                 params={'withDocs': True}
@@ -47,7 +46,7 @@ class Relegence:
         def __init__(self, outer):
             self.outer = outer
 
-        @cached
+        # @cached
         def by_subject(self, subject_id, params={}):
             '''
                 params={'withDocs': True}
@@ -55,24 +54,30 @@ class Relegence:
             p = merge_dicts(self.outer._def_params, params);
             return to_json(requests.get(self.__req_base+subject_id, params=p))
 
+        def by_story_id(self, story_id, params={}):
+            '''
+                params={'numDocs': 100}
+            '''
+            p = merge_dicts(self.outer._def_params, params);
+            return to_json(requests.get(self.__req_base+story_id, params=p))
+
     class Taxenomy:
         __req_base = _HOST + '/taxobrowser/'
 
-        def __init__(self, outer):
-            self.hierarchy = self.__Hierarchy(outer)
-            self.mapper = self.__Mapper(outer)
-            req_subjects = '/hierarchy/subjects'
-            req_nodetypes = '/hierarchy/nodetypes'
+        def __init__(self, parent):
+            self.req_subjects = '/hierarchy/subjects'
+            self.req_nodetypes = '/hierarchy/nodetypes'
+            self.parent=parent
 
-        @cached
+        # @cached
         def get_subjects_hierarchy(self, params={}):
-            p = merge_dicts(self.outer._def_params, params);
-            return to_json(requests.get(self.req_base + self.req_subjects, params=p))
+            p = merge_dicts(params, self.parent._def_params)
+            return to_json(requests.get(self.__req_base + self.req_subjects, params=p))
 
-        @cached
+        # @cached
         def get_nodetypes_hierarchy(self, params={}):
-            p = merge_dicts(self.outer._def_params, params);
-            return to_json(requests.get(self.req_base + self.req_nodetypes, params=p))
+            p = merge_dicts(params, self.parent._def_params)
+            return to_json(requests.get(self.__req_base + self.req_nodetypes, params=p))
 
 
 def merge_dicts(x, y):

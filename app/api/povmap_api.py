@@ -56,10 +56,15 @@ class Taxonomy_EntityAPI(Resource):
 class ArticleAPI(Resource):
     pass
 
-#clusters/story/<int:story_id>
-class StoryClustersAPI(Resource):
+#clustering/story/<int:story_id>
+class StoryClusteringListAPI(Resource):
 
-    def get(self):
+    def __init__(self):
+        parser = self.parser = reqparse.RequestParser()
+        # regex to match subject name. default is .*
+        parser.add_argument('method')
+
+    def get(self, story_id):
         pass
 
     #update multiple articles in the story clusters. moving docs between cluster ids are implemented here.
@@ -70,10 +75,13 @@ class StoryClustersAPI(Resource):
     def post(self):
         pass
 
-    #delete this cluster
+    #delete all clusterings for this story
     def delete(self):
         pass
 
+#clustering/story/<int:story_id>/<int:clustering_id>
+class StoryClusteringAPI(Resource):
+    pass
 
 #clusters/subject/<int:subject_id>
 class TopicClustersAPI(Resource):
