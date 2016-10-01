@@ -1,1 +1,0 @@
-ARTICLE_FOLDER='/srv/perspect/'

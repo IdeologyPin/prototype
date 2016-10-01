@@ -62,17 +62,20 @@ class Centroid(EmbeddedDocument):
     vector=ListField(FloatField())
 
 
-class ArticleNode(EmbeddedDocument):
+class DocNode(EmbeddedDocument):
     article = ReferenceField('Article')
     label = StringField()
     vector = ListField(FloatField())
     scores = MapField(FloatField()) #centroid_id -> float
 
+class SpanNode(EmbeddedDocument):
+    pass
+
 class Clustering(Document):
     name=StringField()
     method=StringField()
     clusters=ListField(EmbeddedDocumentField(Centroid))
-    articles= ListField(EmbeddedDocumentField(ArticleNode))
+    nodes= ListField(EmbeddedDocumentField(DocNode))
 
 
 

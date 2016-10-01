@@ -34,14 +34,21 @@ class Relegence:
             '''
                 params={'withDocs': True}
             '''
+            params['lastActivityDaysBack']= 120
+            params['creationDaysBack'] = 30
+            params['minScore'] = 0.7
+            params['count'] = 20
+            params['docsPerTopic'] = 5
+            params['orberBy'] = 'magScore'
             p = merge_dicts(self.outer._def_params, params);
-            return to_json(requests.get(self.__req_base+'/'+subject_id, params=p))
+            resp=requests.get(self.__req_base+subject_id, params=p)
+            return to_json(resp)
 
     '''
     '''
 
     class Stories:
-        __req_base = _HOST_STAGING + 'stories/'
+        _req_base = _HOST + 'stories/'
 
         def __init__(self, outer):
             self.outer = outer
@@ -52,14 +59,15 @@ class Relegence:
                 params={'withDocs': True}
             '''
             p = merge_dicts(self.outer._def_params, params);
-            return to_json(requests.get(self.__req_base+subject_id, params=p))
+            return to_json(requests.get(self._req_base + subject_id, params=p))
 
         def by_story_id(self, story_id, params={}):
             '''
                 params={'numDocs': 100}
             '''
+            params = {'numDocs': 50}
             p = merge_dicts(self.outer._def_params, params);
-            return to_json(requests.get(self.__req_base+story_id, params=p))
+            return to_json(requests.get(self._req_base + story_id, params=p))
 
     class Taxenomy:
         __req_base = _HOST + '/taxobrowser/'
