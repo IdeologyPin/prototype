@@ -58,7 +58,7 @@ class Article(Document):
 class Centroid(EmbeddedDocument):
     id=IntField()
     name=StringField()
-    label=StringField()
+    tags=ListField(StringField())
     vector=ListField(FloatField())
 
 

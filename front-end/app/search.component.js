@@ -12,15 +12,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by sasinda on 9/10/16.
  */
 var core_1 = require('@angular/core');
+var service_1 = require('./service');
 var SearchComponent = (function () {
-    function SearchComponent() {
+    function SearchComponent(taxoService) {
+        this.taxoService = taxoService;
     }
+    SearchComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.taxoService.getAllSubjects().then(function (subList) { return _this.subjects = subList.subjects; });
+    };
     SearchComponent = __decorate([
         core_1.Component({
             selector: 'search-box',
-            template: " <li>\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <input type=\"text\" > <i class=\"fa fa-search\"></i>\n                     </a>\n                </li>\n               "
+            template: " <li>\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <input type=\"text\" > <i class=\"fa fa-search\"></i>\n                     </a>\n                </li>\n               ",
+            providers: []
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [service_1.TaxoService])
     ], SearchComponent);
     return SearchComponent;
 }());

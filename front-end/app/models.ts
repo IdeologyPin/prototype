@@ -4,3 +4,13 @@ export class Clustering{
     clusters: {}
     nodes= {}
 }
+
+export class Subject{
+    name: string
+    subject_id: string
+}
+
+export class SubjectList{
+    count: number
+    subjects:[Subject]
+}

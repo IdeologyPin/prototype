@@ -1,3 +1,4 @@
+>> npm start
 
 assets
 -------

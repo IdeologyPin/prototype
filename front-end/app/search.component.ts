@@ -1,8 +1,8 @@
 /**
  * Created by sasinda on 9/10/16.
  */
-import {Component} from '@angular/core';
-
+import {Component, OnInit} from '@angular/core';
+import {StoryService,TaxoService} from './service'
 @Component({
     selector: 'search-box',
     template: ` <li>
@@ -10,7 +10,15 @@ import {Component} from '@angular/core';
                         <input type="text" > <i class="fa fa-search"></i>
                      </a>
                 </li>
-               `
+               `,
+    providers:[]
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit {
+    subjects
+
+    constructor(private taxoService: TaxoService) { }
+
+    ngOnInit():void {
+        this.taxoService.getAllSubjects().then(subList=>this.subjects=subList.subjects)
+    }
 }
