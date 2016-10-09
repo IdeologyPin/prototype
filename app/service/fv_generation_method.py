@@ -246,7 +246,7 @@ def cluster_sentence_vectors(sentence_objects, X, r=100, reduce_dim=True, N_CLUS
 
         sent["dist_to_centroid"] = dist_to_centroid
         #add to cluster object
-        cluster_dict[cluster_num]["sentences"].append({sent["sent_id"]: dist_to_centroid})
+        cluster_dict[cluster_num]["sentences"].append((sent["sent_id"], dist_to_centroid))
         # merge keyword dictionaries together
         temp_cluster_keywords[cluster_num] = merge_kwd_counts([temp_cluster_keywords[cluster_num], sent["keywords"]])
         count += 1
