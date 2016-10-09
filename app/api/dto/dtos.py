@@ -1,12 +1,10 @@
 import json
 import bson.json_util as bson
-def to_json(dto):
-    return  json.dumps(dto.__dict__)
 
 
 class BaseDto(object):
      def to_json(self):
-         return json.dumps(self)
+         return json.dumps(self.__dict__)
 
 class SubjectList(BaseDto):
 
@@ -18,7 +16,7 @@ class SubjectList(BaseDto):
     def from_mongo(self, subjects_bson):
         subs=[]
         for s in subjects_bson:
-            subs.append(bson.dumps(s))
+            subs.append(s.to_mongo())
         return  SubjectList(subs)
 
 

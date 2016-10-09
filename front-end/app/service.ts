@@ -34,7 +34,7 @@ export class TaxoService {
     getAllSubjects():Promise<SubjectList> {
         return this.http.get(this.api_url)
             .toPromise()
-            .then(response => response.json() as SubjectList)
+            .then(response => JSON.parse(response.json()) as SubjectList)
             .catch(this.handleError);
     }
 

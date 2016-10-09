@@ -5,6 +5,7 @@ import {ModuleWithProviders}  from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {StoryComponent} from './story.component'
 import {ClusterComponent}      from './clust.component';
+import {ClusterListComponent} from "./clust-list.component";
 
 const appRoutes:Routes = [
     {
@@ -14,7 +15,7 @@ const appRoutes:Routes = [
     },
     {
         path: 'clustering/:id',
-        component: ClusterComponent
+        component: ClusterListComponent
     },
     {
         path: 'stories',
