@@ -47,15 +47,16 @@ class Article(Document):
     story = ReferenceField(Story);
     source = StringField();
     link = StringField();
-    tilte = StringField();
+    title = StringField();
     snippet = StringField();
     file_name = StringField();
     published = DateTimeField();
     author = StringField();
+    content = StringField();
 
     @classmethod
     def find_by_story(cls, story):
-        Article.objects(story=story)
+        return cls.objects(story=story)
 
 
 class Centroid(EmbeddedDocument):
@@ -65,8 +66,10 @@ class Centroid(EmbeddedDocument):
     vector = ListField(FloatField())
 
 
-class DocNode(EmbeddedDocument):
+class Node(EmbeddedDocument):
     article = ReferenceField('Article')
+    span_ids=ListField(IntField())
+    span_type=StringField()
     label = StringField()
     vector = ListField(FloatField())
     scores = MapField(FloatField())  # centroid_id -> float
@@ -77,7 +80,18 @@ class SpanNode(EmbeddedDocument):
 
 
 class Clustering(Document):
+
     name = StringField()
     method = StringField()
+    collection_id=StringField()
     clusters = ListField(EmbeddedDocumentField(Centroid))
-    nodes = ListField(EmbeddedDocumentField(DocNode))
+    nodes = ListField(EmbeddedDocumentField(Node))
+
+    @classmethod
+    def by_collection_id(cls, collection_id):
+        '''
+        :param collection_id: can be story_id or subject_id, or any article collection you specified.
+        :return:
+        '''
+        return Clustering.objects(_id=id).first()
+

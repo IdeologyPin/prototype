@@ -2,8 +2,8 @@ from flask_restful import Resource
 from flask_restful import reqparse
 
 
-from app.data import souce_relegence
-relegence_api=souce_relegence.relegence_API
+from app.data import relegence_service as rs
+relegence_api=rs.relegence_API
 
 # /stories/<story_id> -> details about story
 class StoryAPI(Resource):

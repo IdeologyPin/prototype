@@ -6,7 +6,7 @@ class BaseDto(object):
      def to_json(self):
          return json.dumps(self.__dict__)
 
-class SubjectList(BaseDto):
+class SubjectListDto(BaseDto):
 
     def __init__(self,subjects):
         self.subjects = subjects
@@ -17,7 +17,7 @@ class SubjectList(BaseDto):
         subs=[]
         for s in subjects_bson:
             subs.append(s.to_mongo())
-        return  SubjectList(subs)
+        return  SubjectListDto(subs)
 
 
 

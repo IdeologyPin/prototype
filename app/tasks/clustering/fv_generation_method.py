@@ -1,29 +1,29 @@
-from sklearn.feature_extraction import DictVectorizer
-from scipy.sparse import hstack
 from collections import Counter
-import textacy
-import textacy_keyterms as keyterms
-import numpy as np
-from sklearn.cluster import KMeans
-from sklearn.metrics.pairwise import euclidean_distances
+from collections import defaultdict
 
-import argparse
 import httplib2
+import numpy as np
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
+from scipy.sparse import hstack
+from sklearn.cluster import KMeans
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.metrics.pairwise import euclidean_distances
 
-parser = env.spacy_parser
+import textacy_keyterms as keyterms
+from app.tasks.clustering.clustering_method import ClusteringMethod
+from .. import worker_env as env
 
 
-def run_fv_generation_method(articles, story_id):
-"""
-    runs all methods to return dictionary of clusters ids and sentence/dist
-    and return list of sentence objects
-    articles and story_id
-"""
+def run_fv_generation_method(articles):
+    """
+        runs all methods to return dictionary of clusters ids and sentence/dist
+        and return list of sentence objects
+        articles and story_id
+    """
     articles = delete_repeating_titles(articles)
     articles = parse_articles(articles)
-    sentence_objects = create_sentence_objects(articles, story_id)
+    sentence_objects = create_sentence_objects(articles)
     X = add_sentence_level_features(sentence_objects, articles)
     cluster_dict = cluster_sentence_vectors(sentence_objects, X)
     return cluster_dict, sentence_objects
@@ -50,14 +50,18 @@ def parse_articles(articles):
         articles: list of article jsons from aol api
         parser: spacy.load('en')
     """
-    idx_count = 0
-    for art in articles:
-        articles[idx_count]["parsed_content"] = parser(art["content"])
-        idx_count += 1
-    return articles
+    parser = env.PARSERS['spacy_parser']
+    docs=[]
+    for i, art in enumerate(articles):
+        doc={}
+        doc["parsed_content"] = parser(art.content)
+        doc["id"]=art.article_id
+        doc["title"]=art.title
+        docs.append(doc)
+    return docs
 
 
-def create_sentence_objects(articles, story_id):
+def create_sentence_objects(articles):
     """
         given articles, return list of sentence objects
     """
@@ -73,7 +77,6 @@ def create_sentence_objects(articles, story_id):
             sent_obj["spacy_sent"] = sent
             sent_obj["sent_id"] = sent_count
             sent_obj["article_id"] = article_id
-            sent_obj["story_id"] = story_id
             sent_obj["feature_vector"] = None
             sent_obj["cluster_num"] = None
             sent_objects.append(sent_obj)
@@ -257,3 +260,46 @@ def cluster_sentence_vectors(sentence_objects, X, r=100, reduce_dim=True, N_CLUS
         cluster_dict[cluster_num]["keywords"] = [x[0] for x in clustered]
 
     return cluster_dict
+
+
+from app.model import *
+
+class FV1ClusteringMethod(ClusteringMethod):
+    def cluster(self, article_collection):
+        '''
+        :param article_collection: Object that can query mongodb for articles.
+         has a collection_id: identifier for the article collection story_id or subject_id
+         type app.service.clustering_method.ArticleCollection
+        :return:
+        '''
+        clustering = Clustering(name="Feature Vector Custom 1 for articles in story:" + article_collection.collection_id, method="FV1",
+                                collection_id=article_collection.collection_id)
+
+        articles=article_collection.get_articles()
+
+        cluster_dict, sentence_objects=run_fv_generation_method(articles)
+        centroids=[]
+        nodes=defaultdict(lambda :None)
+        for key, cluster in cluster_dict.iteritems():
+            centroids.append(Centroid(id=key, name=cluster.keywords[0], tags=cluster.keywords))
+            for sent in cluster.sentences:
+                id=sent[0]
+                score=sent[1]
+                sent=sentence_objects[id]
+                doc=nodes[sent.article_id]
+                if doc==None:
+                    n=Node(article=sent.article_id, span_type='Document', scores={})
+                    nodes[sent.article_id]=n
+                    n.scores[key]=[score]
+                else:
+                    doc.scores[key].append(score)
+
+        for node in nodes:
+            for c_id, sent_scores in node.scores:
+                 node.scores[c_id]=sum(sent_scores)/len(sent_scores)
+
+        clustering.clusters=centroids
+        clustering.nodes=nodes.values()
+        clustering.save()
+
+
