@@ -6,26 +6,35 @@ import textacy_keyterms as keyterms
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import euclidean_distances
+from collections import defaultdict
 
 import argparse
 import httplib2
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-parser = env.spacy_parser
+# parser = env.spacy_parser
 
 
-def run_fv_generation_method(articles, story_id):
-"""
-    runs all methods to return dictionary of clusters ids and sentence/dist
-    and return list of sentence objects
-    articles and story_id
-"""
+def run_fv_generation_method(articles, story_id, debug=False):
+    """
+        runs all methods to return dictionary of clusters ids and sentence/dist
+        and return list of sentence objects
+        articles and story_id
+    """
     articles = delete_repeating_titles(articles)
     articles = parse_articles(articles)
+    if debug is True:
+        print "parsed articles using spacy"
     sentence_objects = create_sentence_objects(articles, story_id)
+    if debug is True:
+        print "created sentence objects"
     X = add_sentence_level_features(sentence_objects, articles)
+    if debug is True:
+        print "clustering now"
     cluster_dict = cluster_sentence_vectors(sentence_objects, X)
+    if debug is True:
+        print "clustering done"
     return cluster_dict, sentence_objects
 
 
@@ -115,15 +124,19 @@ def get_article_keywords(article):
 
 def make_keyword_dict(sent, keywords):
     """
-        lemmatize the sentence so keywords that turned singularcan be found
+        lemmatize the sentence so keywords that have changed tense can be found
+        add keywords to sentence object
     """
     kwd_dict = {}
+    sent["keywords"] = {}
     for kwd in keywords:
         if kwd in ' '.join([tok.lemma_ for tok in sent["spacy_sent"]]).lower():
             if kwd not in kwd_dict:
                 kwd_dict[kwd] = 1
+                sent["keywords"][kwd] = 1
             else:
                 kwd_dict[kwd] += 1
+                sent["keywords"][kwd] += 1
     return kwd_dict
 
 
@@ -169,10 +182,10 @@ def add_sentence_level_features(sentence_objects, articles):
     keywords = get_all_keywords(articles)
     X_keyword = vect_keywords.fit_transform(make_keyword_dict(sent, keywords) for sent in sentence_objects)
     #sentiment features:
-    X_sentiment = [get_sentiment(sent["spacy_sent"]) for sent in sentence_objects]
+    # X_sentiment = [get_sentiment(sent["spacy_sent"]) for sent in sentence_objects]
 
     #concatenate
-    vects = hstack([X_bow, X_keyword, X_sentiment])
+    vects = hstack([X_bow, X_keyword ]) #, X_sentiment])
 
     #add vector to sentence_object
     num = 0
