@@ -6,8 +6,9 @@ export class Clustering{
 }
 
 export class Subject{
+    _id:number
     name: string
-    subject_id: string
+    children:[number]
 }
 
 export class SubjectList{

@@ -9,7 +9,7 @@ class SubjectListAPI(Resource):
     '''
     def get(self):
         subs=Subject.objects
-        dto=SubjectList.from_mongo(subs)
+        dto=SubjectListDto.from_mongo(subs)
         return dto.to_json()
 
 class EntityAPI(Resource):

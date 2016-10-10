@@ -10,15 +10,19 @@ import {StoryService,TaxoService} from './service'
                         <input type="text" > <i class="fa fa-search"></i>
                      </a>
                 </li>
+                <p>{{subjects[0].name}}</p>
                `,
     providers:[]
 })
 export class SearchComponent implements OnInit {
-    subjects
+    subjects=["intializing"]
 
     constructor(private taxoService: TaxoService) { }
 
     ngOnInit():void {
-        this.taxoService.getAllSubjects().then(subList=>this.subjects=subList.subjects)
+        this.taxoService.getAllSubjects().then(subList=>{
+            this.subjects=subList.subjects;}
+        )
+
     }
 }

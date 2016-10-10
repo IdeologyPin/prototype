@@ -16,15 +16,18 @@ var service_1 = require('./service');
 var SearchComponent = (function () {
     function SearchComponent(taxoService) {
         this.taxoService = taxoService;
+        this.subjects = ["intializing"];
     }
     SearchComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.taxoService.getAllSubjects().then(function (subList) { return _this.subjects = subList.subjects; });
+        this.taxoService.getAllSubjects().then(function (subList) {
+            _this.subjects = subList.subjects;
+        });
     };
     SearchComponent = __decorate([
         core_1.Component({
             selector: 'search-box',
-            template: " <li>\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <input type=\"text\" > <i class=\"fa fa-search\"></i>\n                     </a>\n                </li>\n               ",
+            template: " <li>\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <input type=\"text\" > <i class=\"fa fa-search\"></i>\n                     </a>\n                </li>\n                <p>{{subjects[0].name}}</p>\n               ",
             providers: []
         }), 
         __metadata('design:paramtypes', [service_1.TaxoService])
