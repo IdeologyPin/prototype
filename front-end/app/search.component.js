@@ -13,10 +13,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var core_1 = require('@angular/core');
 var service_1 = require('./service');
+var models_1 = require('./models');
 var SearchComponent = (function () {
     function SearchComponent(taxoService) {
         this.taxoService = taxoService;
-        this.subjects = ["intializing"];
+        this.subjects = [];
+        var s = new models_1.Subject();
+        s._id = 1212;
+        s.name = 'Initializing';
+        this.subjects = [s];
     }
     SearchComponent.prototype.ngOnInit = function () {
         var _this = this;

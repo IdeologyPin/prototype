@@ -1,4 +1,3 @@
-import spacy
 ARTICLE_FOLDER='/srv/perspect/'
 REDIS_URL='redis://localhost:6379'
 

@@ -1,4 +1,6 @@
+npm install
 >> npm start
+
 
 assets
 -------

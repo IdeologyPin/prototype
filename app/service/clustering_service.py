@@ -29,4 +29,5 @@ class ClusteringService():
 
         collection = StoryCollection(story_id)
         job = q.enqueue(METHODS[method].cluster, collection)
+
         return BaseDto()

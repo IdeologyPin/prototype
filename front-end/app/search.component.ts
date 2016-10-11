@@ -3,6 +3,7 @@
  */
 import {Component, OnInit} from '@angular/core';
 import {StoryService,TaxoService} from './service'
+import {Subject} from './models'
 @Component({
     selector: 'search-box',
     template: ` <li>
@@ -15,9 +16,14 @@ import {StoryService,TaxoService} from './service'
     providers:[]
 })
 export class SearchComponent implements OnInit {
-    subjects=["intializing"]
-
-    constructor(private taxoService: TaxoService) { }
+    subjects=[]
+    
+    constructor(private taxoService: TaxoService) {
+        let s=new Subject();
+        s._id=1212
+        s.name='Initializing'
+        this.subjects=[s]
+    }
 
     ngOnInit():void {
         this.taxoService.getAllSubjects().then(subList=>{

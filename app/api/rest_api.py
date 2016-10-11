@@ -13,9 +13,6 @@ from _article import *
 
 def init(app):
     api = Api(app)
-
-
-
     api.add_resource(StoryAPI, '/story/<string:story_id>')
     api.add_resource(StoryListAPI, '/story/')
     api.add_resource(StoryTrendingAPI, '/story/trending/<string:subject_id>')
