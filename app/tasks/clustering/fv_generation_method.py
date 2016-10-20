@@ -307,14 +307,15 @@ class FV1ClusteringMethod(ClusteringMethod):
         nodes=defaultdict(lambda :None)
         for key, cluster in cluster_dict.iteritems():
             key=str(key)
-            centroids.append(Centroid(id=key, name=cluster['keywords'][0], tags=cluster['keywords']))
+            centroids.append(Centroid(id=str(key), name=cluster['keywords'][0], tags=cluster['keywords']))
             for sent in cluster['sentences']:
                 id=sent[0]
                 score=sent[1]
                 sent=sentence_objects[id]
                 doc=nodes[sent['article_id']]
                 if doc==None:
-                    n=Node(article=sent['article_id'], span_type='Document', scores={})
+                    article=articles[sent['article_id']]
+                    n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source)
                     nodes[sent['article_id']]=n
                     for clust_key in cluster_dict.keys():
                         n.scores[str(clust_key)] = [0]

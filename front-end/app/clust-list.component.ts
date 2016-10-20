@@ -5,43 +5,67 @@ import {Component, Input, ElementRef} from '@angular/core';
 import {ClusteringService} from './service'
 import {ActivatedRoute, Params}   from '@angular/router';
 import {Location}                 from '@angular/common';
+import {Clustering, Node, Cluster} from "./models";
 
 
 @Component({
     selector: 'clustering',
     template: `
-    <p>Cluster 1</p>
-    <div id="foo" class="list-group">
-    <div class="list-group-item"> Doc1 <a href="http://rubaxa.github.io/Sortable/">Sortable</a></div>
-    <div class="list-group-item"> Doc2 </div>
-    <div class="list-group-item"> Doc3 </div>
-    <div class="list-group-item"> Doc4 </div>
-    <div class="list-group-item"> Doc5 </div>
-  </div>
-  
-  
-   <p>Cluster 2</p>
-    <div id="bar" class="list-group">
-    <div class="list-group-item"> Doc6 <a href="http://rubaxa.github.io/Sortable/">Sortable</a></div>
-    <div class="list-group-item"> Doc7 </div>
-    <div class="list-group-item"> Doc8 </div>
-    <div class="list-group-item"> Doc9 </div>
-    <div class="list-group-item"> Doc10 </div>
-  </div>
-  
-  
+    <div *ngFor="let clustering of clusterings">
+        <p>Clustering  : {{clustering.name}}</p>
+    </div>
+    
+    <div class="clustering lists" *ngIf="clustering">
+        <div *ngFor="let cluster of clustering.clusters">
+            <p> Cluster  : {{cluster.name}}</p>
+             <div id="cluster{{cluster.id}}" class="list-group">
+                <div *ngFor="let node of cluster.nodes" class="list-group-item">
+                    {{node.article}} <a href="http://rubaxa.github.io/Sortable/">view</a>
+                </div>
+             </div>            
+        </div>
+    </div>    
   `
 })
 export class ClusterListComponent {
-    constructor(private clustering:ClusteringService) {
+    protected clusterings:Clustering[]
+    protected clustering:Clustering
+
+
+
+    constructor(private clusteringService:ClusteringService) {
 
     }
 
-    ngAfterViewInit() {
-        var foo = document.getElementById("foo");
-        Sortable.create(foo,{group: 'clusters'})
+    ngOnInit():void {
+        this.clusteringService.getStoryClustering('773932258236952576').then(cList=> {
+            this.clusterings = cList.clusterings;
+            this.clustering = cList.clusterings[0]
+            let clustering=this.clustering
+            let clust_nodes:{ [id: string] : Node[] } = {};
 
-        var bar = document.getElementById("bar");
-        Sortable.create(bar, {group: 'clusters'})
+            for(let clust of clustering.clusters){
+                clust_nodes[clust.id]=[]
+            }
+            for(let node of clustering.nodes){
+                let scores=node.scores
+                for(let cid in scores){
+                    if(scores[cid]>0.1){
+                        clust_nodes[cid].push(node)
+                    }
+                }
+            }
+            for(let clust of clustering.clusters){
+                clust.nodes=clust_nodes[clust.id]
+            }
+
+        })
+    }
+
+    ngAfterViewInit() {
+
+
+        // var bar = document.getElementById("bar");
+        // Sortable.create(bar, {group: 'clusters'})
     }
 }
