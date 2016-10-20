@@ -17,8 +17,8 @@ class StoryClusteringListAPI(Resource):
     def get(self, story_id):
         args = self.parser.parse_args()
         method=args['method']
-        clustering=self.cs.cluster(story_id, method)
-        return clustering.to_json()
+        dto=self.cs.cluster(story_id, method)
+        return dto.to_dict()
 
     #update multiple articles in the story clusters. moving docs between cluster ids are implemented here.
     def put(self):

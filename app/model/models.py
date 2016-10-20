@@ -1,6 +1,7 @@
 from mongoengine import *
 
-connect('perspect_db')
+def init_connection():
+    connect('perspect_db')
 
 
 class Meta(Document):
@@ -86,6 +87,7 @@ class Clustering(Document):
     collection_id=StringField()
     clusters = ListField(EmbeddedDocumentField(Centroid))
     nodes = ListField(EmbeddedDocumentField(Node))
+    status = StringField()
 
     @classmethod
     def by_collection_id(cls, collection_id):
@@ -93,5 +95,5 @@ class Clustering(Document):
         :param collection_id: can be story_id or subject_id, or any article collection you specified.
         :return:
         '''
-        return Clustering.objects(_id=id).first()
+        return Clustering.objects(collection_id=collection_id)
 

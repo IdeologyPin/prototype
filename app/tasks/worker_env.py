@@ -1,5 +1,5 @@
 import spacy
-import pygate
+# import pygate
 import os
 REDIS_URL='redis://localhost:6379'
 

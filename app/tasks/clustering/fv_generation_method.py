@@ -16,7 +16,7 @@ from app.tasks.clustering.clustering_method import ClusteringMethod
 from .. import worker_env as env
 
 
-def run_fv_generation_method(articles, debug=False):
+def run_fv_generation_method(articles, sentiment, debug=False):
     """
         runs all methods to return dictionary of clusters ids and sentence/dist
         and return list of sentence objects
@@ -30,10 +30,11 @@ def run_fv_generation_method(articles, debug=False):
     if debug is True:
         print "created sentence objects"
     sentence_objects = create_sentence_objects(articles)
-    X = add_sentence_level_features(sentence_objects, articles)
+    service = get_google_service()
+    X = add_sentence_level_features(sentence_objects, articles, service, sentiment)
     if debug is True:
         print "clustering now"
-    cluster_dict = cluster_sentence_vectors(sentence_objects, X)
+    cluster_dict = cluster_sentence_vectors(sentence_objects,  X, r=20)
     if debug is True:
         print "clustering done"
     return cluster_dict, sentence_objects
@@ -156,22 +157,22 @@ def get_google_service():
     return discovery.build('language', 'v1beta1', http=http)
 
 
-def get_sentiment(sent):
+def get_sentiment(sent, service):
     """
         use google cloud nlp to get sentiment
     """
+
     body = {'document': {
                 'type': 'PLAIN_TEXT',
                 'content': sent.orth_
                 }
             }
-    service = get_google_service()
     request = service.documents().analyzeSentiment(body=body)
     response = request.execute()
     return [response["documentSentiment"]["magnitude"], response["documentSentiment"]["polarity"]]
 
 
-def add_sentence_level_features(sentence_objects, articles):
+def add_sentence_level_features(sentence_objects, articles, service, sentiment=True):
     """
         add feature vector to sentence object. features:
         - bow
@@ -186,10 +187,14 @@ def add_sentence_level_features(sentence_objects, articles):
     keywords = get_all_keywords(articles)
     X_keyword = vect_keywords.fit_transform(make_keyword_dict(sent, keywords) for sent in sentence_objects)
     #sentiment features:
-    # X_sentiment = [get_sentiment(sent["spacy_sent"]) for sent in sentence_objects]
+    if sentiment:
+        X_sentiment = [get_sentiment(sent["spacy_sent"], service) for sent in sentence_objects]
 
     #concatenate
-    vects = hstack([X_bow, X_keyword ]) #, X_sentiment])
+    if sentiment:
+        vects = hstack([X_bow, X_keyword, X_sentiment])
+    else:
+        vects = hstack([X_bow, X_keyword])
 
     #add vector to sentence_object
     num = 0
@@ -279,39 +284,49 @@ def cluster_sentence_vectors(sentence_objects, X, r=100, reduce_dim=True, N_CLUS
 from app.model import *
 
 class FV1ClusteringMethod(ClusteringMethod):
-    def cluster(self, article_collection):
+
+    def _init_clustering(self, article_collection):
+        clustering = Clustering(
+            name="Feature Vector Custom 1 for articles in story:" + article_collection.collection_id, method="FV1",
+            collection_id=article_collection.collection_id, status='running')
+        clustering.save()
+        self.clustering=clustering
+
+    def _cluster(self, article_collection):
         '''
         :param article_collection: Object that can query mongodb for articles.
          has a collection_id: identifier for the article collection story_id or subject_id
          type app.service.clustering_method.ArticleCollection
         :return:
         '''
-        clustering = Clustering(name="Feature Vector Custom 1 for articles in story:" + article_collection.collection_id, method="FV1",
-                                collection_id=article_collection.collection_id)
+
 
         articles=article_collection.get_articles()
-
-        cluster_dict, sentence_objects=run_fv_generation_method(articles)
+        cluster_dict, sentence_objects=run_fv_generation_method(articles, False)
         centroids=[]
         nodes=defaultdict(lambda :None)
         for key, cluster in cluster_dict.iteritems():
-            centroids.append(Centroid(id=key, name=cluster.keywords[0], tags=cluster.keywords))
-            for sent in cluster.sentences:
+            key=str(key)
+            centroids.append(Centroid(id=key, name=cluster['keywords'][0], tags=cluster['keywords']))
+            for sent in cluster['sentences']:
                 id=sent[0]
                 score=sent[1]
                 sent=sentence_objects[id]
-                doc=nodes[sent.article_id]
+                doc=nodes[sent['article_id']]
                 if doc==None:
-                    n=Node(article=sent.article_id, span_type='Document', scores={})
-                    nodes[sent.article_id]=n
-                    n.scores[key]=[score]
+                    n=Node(article=sent['article_id'], span_type='Document', scores={})
+                    nodes[sent['article_id']]=n
+                    for clust_key in cluster_dict.keys():
+                        n.scores[str(clust_key)] = [0]
+                    n.scores[key] = [score]
                 else:
                     doc.scores[key].append(score)
 
-        for node in nodes:
-            for c_id, sent_scores in node.scores:
+        for node in nodes.values():
+            for c_id, sent_scores in node.scores.iteritems():
                  node.scores[c_id]=sum(sent_scores)/len(sent_scores)
 
+        clustering=self.clustering
         clustering.clusters=centroids
         clustering.nodes=nodes.values()
         clustering.save()

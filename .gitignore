@@ -2,3 +2,15 @@
 .idea/**
 .eclipse
 server/povmap/**
+front-end/node_modules
+app/**/*.pyc
+front-end/app/*.js
+front-end/app/*.js.map
+
+
+app/util/
+dump.rdb
+env/
+
+front-end/typings/
+test.py
