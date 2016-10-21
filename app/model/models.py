@@ -74,6 +74,7 @@ class Node(EmbeddedDocument):
     label = StringField()
     vector = ListField(FloatField())
     scores = MapField(FloatField())  # centroid_id -> float
+    link = StringField()
 
 
 class SpanNode(EmbeddedDocument):
@@ -81,7 +82,6 @@ class SpanNode(EmbeddedDocument):
 
 
 class Clustering(Document):
-
     name = StringField()
     method = StringField()
     collection_id=StringField()

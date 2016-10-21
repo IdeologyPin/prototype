@@ -30,11 +30,17 @@ def run_fv_generation_method(articles, sentiment, debug=False):
     if debug is True:
         print "created sentence objects"
     sentence_objects = create_sentence_objects(articles)
-    service = get_google_service()
+
+    service=None
+    if sentiment:
+        service = get_google_service()
+    if debug is True:
+        if sentiment:
+            print "got service"
     X = add_sentence_level_features(sentence_objects, articles, service, sentiment)
     if debug is True:
         print "clustering now"
-    cluster_dict = cluster_sentence_vectors(sentence_objects,  X, r=20)
+    cluster_dict = cluster_sentence_vectors(sentence_objects,  X, reduce_dim=True, r=20)
     if debug is True:
         print "clustering done"
     return cluster_dict, sentence_objects
@@ -186,6 +192,7 @@ def add_sentence_level_features(sentence_objects, articles, service, sentiment=T
     vect_keywords = DictVectorizer()
     keywords = get_all_keywords(articles)
     X_keyword = vect_keywords.fit_transform(make_keyword_dict(sent, keywords) for sent in sentence_objects)
+    print "sentiment analysis"
     #sentiment features:
     if sentiment:
         X_sentiment = [get_sentiment(sent["spacy_sent"], service) for sent in sentence_objects]
@@ -302,7 +309,11 @@ class FV1ClusteringMethod(ClusteringMethod):
 
 
         articles=article_collection.get_articles()
-        cluster_dict, sentence_objects=run_fv_generation_method(articles, False)
+        cluster_dict, sentence_objects=run_fv_generation_method(articles, False, debug=True)
+        art_dict={}
+        for a in articles:
+            art_dict[a.id]=a
+
         centroids=[]
         nodes=defaultdict(lambda :None)
         for key, cluster in cluster_dict.iteritems():
@@ -314,8 +325,8 @@ class FV1ClusteringMethod(ClusteringMethod):
                 sent=sentence_objects[id]
                 doc=nodes[sent['article_id']]
                 if doc==None:
-                    article=articles[sent['article_id']]
-                    n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source)
+                    article=art_dict[sent['article_id']]
+                    n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)
                     nodes[sent['article_id']]=n
                     for clust_key in cluster_dict.keys():
                         n.scores[str(clust_key)] = [0]

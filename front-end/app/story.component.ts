@@ -5,8 +5,8 @@ import {Component} from '@angular/core';
 
 @Component({
     selector: 'story-list',
-    template: ` analysed stories table
-               `
+    template: ` analysed stories table`
 })
 export class StoryComponent {
+    
 }

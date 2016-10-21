@@ -20,7 +20,7 @@ import {Clustering, Node, Cluster} from "./models";
             <p> Cluster  : {{cluster.name}}</p>
              <div id="cluster{{cluster.id}}" class="list-group">
                 <div *ngFor="let node of cluster.nodes" class="list-group-item">
-                    {{node.article}} <a href="http://rubaxa.github.io/Sortable/">view</a>
+                    {{node.label}} <a href="{{node.link}}" target="_blank">view</a>
                 </div>
              </div>            
         </div>
@@ -38,7 +38,7 @@ export class ClusterListComponent {
     }
 
     ngOnInit():void {
-        this.clusteringService.getStoryClustering('773932258236952576').then(cList=> {
+        this.clusteringService.getStoryClustering('788919729412280320').then(cList=> {
             this.clusterings = cList.clusterings;
             this.clustering = cList.clusterings[0]
             let clustering=this.clustering
