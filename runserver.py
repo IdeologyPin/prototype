@@ -11,6 +11,8 @@ rest_api.init(app)
 
 CORS(app)
 
+
+# Omri: Sasinda, probably need to find a better place for this piece of code.
 @app.after_request
 def after_request(response):
 	response.headers.add('Access-Control-Allow-Origin', '*')

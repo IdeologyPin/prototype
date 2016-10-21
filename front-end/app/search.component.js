@@ -75,7 +75,6 @@ var SearchComponent = (function () {
         }
         console.log(this.selectedSubjectId);
         this.router.navigate(['/subject', this.selectedSubjectId]);
-        // OMRI | TBD: use this.this.selectedSubjectId to trigger call to stories API and generate the list of stories.
     };
     SearchComponent = __decorate([
         core_1.Component({

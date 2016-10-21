@@ -62,10 +62,10 @@ export class StoryComponent implements OnInit {
     select(item) {
         this.selectedStory = item;
         console.log(item);
-        this.clusteringService.getStoryClustering(item.id).then(clusteringsList=>{
-            // console.log(clusteringsList);
-            // console.log(clusteringsList.clusterings[0]._id);
-            this.router.navigate(['/clustering', clusteringsList.clusterings[0]._id]);
+        this.router.navigate(['/clustering', item.id]);
+        // this.clusteringService.getStoryClustering(item.id).then(clusteringsList=>{
+            // this.router.navigate(['/clustering', clusteringsList.clusterings[0]._id]);
+            // OMRI: Right now only taking the first Clustering ID; needs to find better algorithm for this
         })
     }
 }
