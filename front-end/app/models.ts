@@ -39,3 +39,14 @@ export class SubjectList{
     count: number
     subjects:Subject[]
 }
+
+export class Story{
+    _id: number
+    headline: string
+    url:string
+}
+
+export class StoriesList{
+    count: number
+    stories:Story[]
+}

@@ -38,3 +38,19 @@ class ClusteringListDto(BaseDto):
             clusterings.append(json)
         return ClusteringListDto(clusterings)
 
+
+class TrendingStoryListDto(BaseDto):
+
+    def __init__(self, stories):
+        self.stories=stories
+        self.count=len(stories)
+
+    @classmethod
+    def from_relegence(self, relegence_stories):
+        stories = []
+        for s in relegence_stories['results']:
+            # stories[s['_id']] = s['alphaDocs'][0]['headline']
+            stories.append({"id":s['_id'], "headline":s['alphaDocs'][0]['headline'], "url":s['alphaDocs'][0]['guid']})
+        return TrendingStoryListDto(stories).to_dict()
+
+

@@ -12,11 +12,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by sasinda on 9/10/16.
  */
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
 var service_1 = require('./service');
 var models_1 = require('./models');
 var SearchComponent = (function () {
-    function SearchComponent(taxoService, myElement) {
+    function SearchComponent(taxoService, myElement, router) {
         this.taxoService = taxoService;
+        this.router = router;
         this.subjects = [];
         this.query = '';
         this.filteredList = [];
@@ -72,6 +74,7 @@ var SearchComponent = (function () {
             }
         }
         console.log(this.selectedSubjectId);
+        this.router.navigate(['/subject', this.selectedSubjectId]);
         // OMRI | TBD: use this.this.selectedSubjectId to trigger call to stories API and generate the list of stories.
     };
     SearchComponent = __decorate([
@@ -83,7 +86,7 @@ var SearchComponent = (function () {
             template: " \n                <div class=\"container\" >\n                    <div class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                        <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n                          <input id=\"subjects\" type=\"text\" [(ngModel)]=query (keyup)=filter()>\n                          <i class=\"fa fa-search\"></i>\n                        </a>\n                    </div>\n                    <div class=\"suggestions\" *ngIf=\"filteredList.length > 0\">\n                        <ul *ngFor='let item of filteredList; let i=index' >\n                            <li *ngIf=\"i<10\">\n                                <a (click)='select(item)' >{{item}}</a>\n                            </li>\n                        </ul>\n                    </div>\n                </div> \n               ",
             providers: []
         }), 
-        __metadata('design:paramtypes', [service_1.TaxoService, core_1.ElementRef])
+        __metadata('design:paramtypes', [service_1.TaxoService, core_1.ElementRef, router_1.Router])
     ], SearchComponent);
     return SearchComponent;
 }());

@@ -8,17 +8,25 @@ import {ClusterComponent}      from './clust.component';
 import {ClusterListComponent} from "./clust-list.component";
 
 const appRoutes:Routes = [
-    {
-        path: '',
-        redirectTo: '/stories',
-        pathMatch: 'full'
-    },
+    // {
+    //     path: '',
+    //     // redirectTo: '/stories',
+    //     pathMatch: 'full'
+    // },
     {
         path: 'clustering/:id',
         component: ClusterListComponent
     },
     {
         path: 'stories',
+        component: StoryComponent
+    },
+    {
+        path: 'subject/:subject_id',
+        component: StoryComponent
+    },
+    {
+        path: 'subject/:subject_id/stories',
         component: StoryComponent
     }
 ];

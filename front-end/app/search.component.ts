@@ -1,9 +1,10 @@
 /**
  * Created by sasinda on 9/10/16.
  */
-import {Component, OnInit, ElementRef} from '@angular/core';
-import {StoryService,TaxoService} from './service'
-import {Subject} from './models'
+import { Component, OnInit, ElementRef } from '@angular/core';
+import { RouterModule, Router }   from '@angular/router';
+import { StoryService, TaxoService } from './service'
+import { Subject } from './models'
 
 
 @Component({
@@ -39,7 +40,7 @@ export class SearchComponent implements OnInit {
     public subjectList = [''];
     public selectedSubjectId;
     
-    constructor(private taxoService: TaxoService, myElement: ElementRef) {
+    constructor(private taxoService: TaxoService, myElement: ElementRef, private router:Router) {
         let s=new Subject();
         s._id=1212
         s.name='Initializing'
@@ -95,6 +96,7 @@ export class SearchComponent implements OnInit {
             if(this.subjects[i].name == name) { this.selectedSubjectId = this.subjects[i]._id }
         }
         console.log(this.selectedSubjectId);
+        this.router.navigate(['/subject', this.selectedSubjectId]);
         // OMRI | TBD: use this.this.selectedSubjectId to trigger call to stories API and generate the list of stories.
     }    
 
