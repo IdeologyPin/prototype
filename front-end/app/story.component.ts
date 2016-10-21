@@ -2,7 +2,7 @@
  * Created by sasinda on 9/29/16.
  */
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { ActivatedRoute, Params }   from '@angular/router';
+import { Router, ActivatedRoute, Params }   from '@angular/router';
 import { StoryService, ClusteringService } from './service'
 import { Story } from './models'
 
@@ -29,12 +29,13 @@ export class StoryComponent implements OnInit {
 	public urlList = [];
 	public elementRef;
 	public selectedStory;
-	public test;
+	public clusteringsList;
 
 	constructor(private storyService: StoryService, 
 						myElement: ElementRef, 
 				private route: ActivatedRoute,
-				private clusteringService: ClusteringService) {
+				private clusteringService: ClusteringService,
+				private router:Router) {
         let s=new Story();
         s._id=1
         s.headline='Initializing'
@@ -52,7 +53,6 @@ export class StoryComponent implements OnInit {
 	            this.stories=storyList.stories;
 	            for (var i = 0; i < storyList.stories.length; i++) { 
 	                this.storyList.push(storyList.stories[i]);
-	                // this.urlList.push(storyList.stories[i].url);
 	                console.log(storyList.stories[i].headline);
 	            }
 	        })
@@ -62,8 +62,10 @@ export class StoryComponent implements OnInit {
     select(item) {
         this.selectedStory = item;
         console.log(item);
-        this.clusteringService.getStoryClustering(item.id).then(test=>{
-            console.log(test);
+        this.clusteringService.getStoryClustering(item.id).then(clusteringsList=>{
+            // console.log(clusteringsList);
+            // console.log(clusteringsList.clusterings[0]._id);
+            this.router.navigate(['/clustering', clusteringsList.clusterings[0]._id]);
         })
     }
 }
