@@ -2,8 +2,9 @@ from flask_restful import Resource
 from flask_restful import reqparse
 
 from app.api.dto import TrendingStoryListDto
-from app.data import relegence_service as rs
-relegence_api=rs.relegence_API
+from app.data import *
+relegence_api=relegence_service.relegence_API
+rs=RelegenceService()
 
 # /stories/<story_id> -> details about story
 class StoryAPI(Resource):
@@ -44,6 +45,6 @@ class StoryTrendingAPI(Resource):
     '''
     def get(self, subject_id):
         args = self.parser.parse_args()
-        raw_data = relegence_api.trending.by_subject(subject_id, {'numDocs': 1})
+        raw_data = rs.get_treinding_by_subject(subject_id)
         return TrendingStoryListDto.from_relegence(raw_data)
 

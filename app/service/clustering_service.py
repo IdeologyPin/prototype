@@ -1,11 +1,9 @@
-from redis import Redis
-from rq import Queue
-
 from app.data import RelegenceService
 from app.tasks.clustering import FV1ClusteringMethod
 from app.tasks.clustering.clustering_method import StoryCollection
 from app.api.dto import *
 from app.model import Clustering
+import app.jobQ as jq
 
 import app.tasks.worker_env as wenv
 wenv.init_spacy()
@@ -17,9 +15,8 @@ METHODS = {
 }
 
 rs=RelegenceService()
+rq=jq.get_RQ()
 
-redis_conn = Redis()
-q = Queue(connection=redis_conn)
 
 class ClusteringService():
 
@@ -31,6 +28,7 @@ class ClusteringService():
         :param method:
         :return: the list of clusterings for this article collection
         '''
+        story_id='773932258236952576'
         if method==None:
             method='FV1'
 
@@ -39,7 +37,7 @@ class ClusteringService():
         clusterings = Clustering.by_collection_id(story_id)
         if clusterings==None or len(clusterings)==0:
             #run as async job
-            # job = q.enqueue(METHODS[method].run_clustering, collection)
+            # job = rq.enqueue(METHODS[method].run_clustering, collection)
             #run in same thread
             METHODS[method].run_clustering(collection)
 

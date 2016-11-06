@@ -60,7 +60,6 @@ export class ClusterListComponent {
                 for(let clust of clustering.clusters){
                     clust.nodes=clust_nodes[clust.id]
                 }
-
             })
         });
     }

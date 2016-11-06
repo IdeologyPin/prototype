@@ -1,10 +1,13 @@
 from aol import relegence
 from app.model import Subject, Meta, Story, Article
 import datetime
-
+import app.jobQ as jq
 relegence_API=relegence.Relegence()
 
 class RelegenceService(object):
+    def __init__(self):
+        self.rq=jq.get_RQ()
+
 
     def get_articles_by_story(self, story_id):
         story=Story.find_by_id(story_id)
@@ -17,8 +20,14 @@ class RelegenceService(object):
                 fname=a['id'].replace('/','|')
                 amodel=Article(article_id=a['id'], story=smodel, source=a['source']['title'], link=a['link'], title=a['title'], snippet=a['snippet'], author=a['author']['name'], content=a['content'], file_name=fname)
                 amodel.save()
-
         return Article.find_by_story(story)
+
+    def get_treinding_by_subject(self, subject_id):
+        # raw_data = relegence_API.trending.by_subject(subject_id, {'numDocs': 1})
+        # fetch all docs for the subject as well.
+        # self.rq.enqueue(job_save_alpha_docs_by_trending, subject_id)
+        raw_data = relegence_API.trending.by_subject(subject_id, {'numDocs': 1, 'withDocs': True})
+        return raw_data
 
     def sync_relegence_hierarchy(self):
         subjects=relegence_API.taxenomy.get_subjects_hierarchy()['data']
@@ -46,4 +55,9 @@ class RelegenceService(object):
         for i in range(len(stack)-1,-1,-1):
             model=stack[i]
             model.save()
+
+
+
+
+
 
