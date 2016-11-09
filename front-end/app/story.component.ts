@@ -53,6 +53,7 @@ export class StoryComponent implements OnInit {
 	            this.stories=storyList.stories;
 	            for (var i = 0; i < storyList.stories.length; i++) { 
 	                this.storyList.push(storyList.stories[i]);
+                    // console.log(storyList.stories[i].id);
 	                console.log(storyList.stories[i].headline);
 	            }
 	        })

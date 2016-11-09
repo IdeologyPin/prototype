@@ -50,7 +50,7 @@ class TrendingStoryListDto(BaseDto):
         stories = []
         for s in relegence_stories['results']:
             # stories[s['_id']] = s['alphaDocs'][0]['headline']
-            stories.append({"id":s['_id'], "headline":s['alphaDocs'][0]['headline'], "url":s['alphaDocs'][0]['guid']})
+            stories.append({"id":str(s['_id']), "headline":s['alphaDocs'][0]['headline'], "url":s['alphaDocs'][0]['guid']})
         return TrendingStoryListDto(stories).to_dict()
 
 

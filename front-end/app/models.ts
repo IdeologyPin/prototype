@@ -41,7 +41,9 @@ export class SubjectList{
 }
 
 export class Story{
-    _id: number
+    // _id: number
+    _id: string
+    // id: number
     headline: string
     url:string
 }
