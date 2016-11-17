@@ -14,3 +14,5 @@ env/
 
 front-end/typings/
 test.py
+
+**/*.log

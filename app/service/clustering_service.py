@@ -28,7 +28,7 @@ class ClusteringService():
         :param method:
         :return: the list of clusterings for this article collection
         '''
-        story_id='773932258236952576'
+        # story_id='773932258236952576'
         if method==None:
             method='FV1'
 
