@@ -1,5 +1,5 @@
 from app.data import RelegenceService
-from app.tasks.clustering import FV1ClusteringMethod
+from app.tasks.clustering import FV1ClusteringMethod, FV1ClusteringMethod2
 from app.tasks.clustering.clustering_method import StoryCollection
 from app.api.dto import *
 from app.model import Clustering
@@ -11,7 +11,7 @@ wenv.init_spacy()
 METHODS = {
     'DOC2VEC': None,
     'LDA': None,
-    'FV1': FV1ClusteringMethod()
+    'FV1': FV1ClusteringMethod2()
 }
 
 rs=RelegenceService()
@@ -35,12 +35,15 @@ class ClusteringService():
         collection = StoryCollection(story_id)
 
         clusterings = Clustering.by_collection_id(story_id)
+        #debug run
+        METHODS[method].run_clustering(collection)
+
         if clusterings==None or len(clusterings)==0:
             #run as async job
             # job = rq.enqueue(METHODS[method].run_clustering, collection)
             #run in same thread
-            METHODS[method].run_clustering(collection)
-
+            # METHODS[method].run_clustering(collection)
+            pass
 
         clusterings=Clustering.by_collection_id(story_id)
         dto=ClusteringListDto.from_mongo(clusterings)

@@ -19,3 +19,5 @@ def init(app):
     # api.add_resource(SubjectAPI, '/taxenomy/subjects/<string:subject_id>')
     api.add_resource(SubjectListAPI, '/taxonomy/subjects/')
     api.add_resource(StoryClusteringListAPI,'/clustering/story/<string:story_id>')
+    api.add_resource(ArticleAPI,'/articles/<string:article_id>')
+

@@ -53,12 +53,17 @@ class Article(Document):
     file_name = StringField();
     published = DateTimeField();
     author = StringField();
-    content = StringField();
+    text = StringField();
+    #annotations
+    entities=ListField();
 
     @classmethod
     def find_by_story(cls, story):
         return cls.objects(story=story)
 
+    @classmethod
+    def by_id(cls, id):
+        return cls.objects(pk=id).first()
 
 class Centroid(EmbeddedDocument):
     id = StringField()
@@ -75,10 +80,6 @@ class Node(EmbeddedDocument):
     vector = ListField(FloatField())
     scores = MapField(FloatField())  # centroid_id -> float
     link = StringField()
-
-
-class SpanNode(EmbeddedDocument):
-    pass
 
 
 class Clustering(Document):

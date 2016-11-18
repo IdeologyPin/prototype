@@ -3,6 +3,8 @@ from app.model import Clustering
 from app.tasks.task import Task
 
 import sys
+from pygate import DataSource
+from pygate.ext.spacy_io import SpacyDoc
 
 class ClusteringMethod(Task):
 
@@ -43,7 +45,7 @@ class ClusteringMethod(Task):
         self.clustering.save()
 
 
-class ArticleCollection(object):
+class ArticleCollection(DataSource):
 
     def __init__(self, collection_id, query=[]):
         '''
@@ -52,6 +54,9 @@ class ArticleCollection(object):
         self.query=query
 
     def get_articles(self):
+        raise NotImplemented()
+
+    def iter_docs(self):
         raise NotImplemented()
 
 class StoryCollection(ArticleCollection):
@@ -64,5 +69,16 @@ class StoryCollection(ArticleCollection):
         rs=RelegenceService()
         return rs.get_articles_by_story(self.story_id)
 
+    def process(self,doc):
+        pass
 
+    def iter_docs(self):
+        articles=self.get_articles()
+        for a in articles:
+            sdoc=SpacyDoc(a.text)
+            sdoc['mongo']= a
+            sdoc["id"] = a.article_id
+            sdoc["title"] = a.title
+            sdoc['url']=a.link
+            yield sdoc
 

@@ -54,3 +54,12 @@ class TrendingStoryListDto(BaseDto):
         return TrendingStoryListDto(stories).to_dict()
 
 
+class ArticleDto(BaseDto):
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def from_mongo(cls, art):
+        raise NotImplemented()
+

@@ -242,7 +242,7 @@ def merge_kwd_counts(keywords):
     return kwds_aggregation
 
 
-def cluster_sentence_vectors(sentence_objects, X, r=100, reduce_dim=True, N_CLUSTERS=5):
+def  cluster_sentence_vectors(sentence_objects, X, r=100, reduce_dim=True, N_CLUSTERS=5):
     """
         given vector results and number of clusters return cluster objects
         reduce_dim is True on default

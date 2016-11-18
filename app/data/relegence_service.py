@@ -18,7 +18,7 @@ class RelegenceService(object):
             articles=s['articles']
             for a in articles:
                 fname=a['id'].replace('/','|')
-                amodel=Article(article_id=a['id'], story=smodel, source=a['source']['title'], link=a['link'], title=a['title'], snippet=a['snippet'], author=a['author']['name'], content=a['content'], file_name=fname)
+                amodel=Article(article_id=fname, story=smodel, source=a['source']['title'], link=a['link'], title=a['title'], snippet=a['snippet'], author=a['author']['name'], text=a['content'], file_name=fname)
                 amodel.save()
         return Article.find_by_story(story)
 
