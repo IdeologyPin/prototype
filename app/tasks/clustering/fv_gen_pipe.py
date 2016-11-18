@@ -3,7 +3,7 @@ from pygate.ext.google_nlp import SentimentAnalyserPR
 from pygate.ext.spacy_io import SpacyDoc
 from pygate.ext.textacy import KeyTermAnnotatorPR
 from pygate.prs import SPMRulePR
-
+from pygate.ext.relegence_nlp import RelEntityTagger
 from app.model import Clustering
 from app.tasks.clustering.clustering_method import ClusteringMethod
 
@@ -41,8 +41,27 @@ class CustomFeatureExtractor(PR):
 class SentimentHighlighter(PR):
 
     def process(self,doc):
-        pass
+        '''
+        :type doc SpacyDoc
+        :param doc:
+        :return:
+        '''
+        THRESHOLD=0.6
 
+        pos=[]
+        neg=[]
+        for sent in doc.sents:
+            if 'gs_score' in sent.features:
+                score=sent.get_feature('gs_score')
+                if score>THRESHOLD:
+                    ann=Annotation(sent.text, sent.tStart, sent.tEnd, sent.cStart, sent.cEnd, 'PosSentiment',doc)
+                    pos.append(ann)
+                elif score< -1*THRESHOLD:
+                    ann = Annotation(sent.text, sent.tStart, sent.tEnd, sent.cStart, sent.cEnd, 'NegSentiment', doc)
+                    neg.append(ann)
+
+        doc.set_annotation_set('PosSentiment', pos)
+        doc.set_annotation_set('NegSentiment', neg)
 
 class BratEmbeddingToMongoPR(PR):
 
@@ -68,18 +87,20 @@ def run_fv_generation_method(articles_collection):
     prs = [
         DuplicateClearingPR(),
         SentimentAnalyserPR('Sentence'),
-        SPMRulePR('@Sentence.gs_score > 0.6 -->  @PosSentiment'),
-        SPMRulePR('@Sentence.gs_score < -0.6 -->  @NegSentiment'),
+        SentimentHighlighter(),
         KeyTermAnnotatorPR(),
+        RelEntityTagger(),
         CustomFeatureExtractor(),
-        BratEmbeddingToMongoPR(['KeyTerm', 'PosSentiment', 'NegSentiment']),
+        BratEmbeddingToMongoPR(['KeyTerm', 'PosSentiment', 'NegSentiment', 'Entity']),
         ann_store, doc_store]
+
     pipe = Pipeline()
     pipe.setPRs(prs).setCorpus(articles_collection)
+
     result=pipe.process(5)
 
 
-    for a in ann_store:
+    for a in ann_store.annots:
         pass
 
 
