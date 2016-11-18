@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>brat</title>
+
+    <link href="assets/brat_embed/jquery-theme/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <link href="http://weaver.nlplab.org/~brat/demo/v1.3/static/jquery-theme/jquery-ui-redmond.css" rel="stylesheet" type="text/css"/>
+    <!-- <script type="text/javascript" src="https://github.com/nlplab/brat/client/lib/head.load.min.js"></script> -->
+    <!-- <script type="text/javascript" src="http://weaver.nlplab.org/~brat/demo/v1.3/client/lib/head.load.min.js"></script> -->
+    <script type="text/javascript" src="http://weaver.nlplab.org/~brat/demo/v1.3/client/lib/head.load.min.js"></script>
+    <script type="text/javascript">
+      home = 'http://weaver.nlplab.org/~brat/demo/v1.3/';
+      // console.log(test);
+      head.js(
+          // libraries
+          home + 'client/lib/jquery.min.js',
+          // home + 'client/lib/jquery-ui.min.js',
+          // home + 'client/lib/jquery-ui.combobox.js',
+          home + 'client/lib/jquery.svg.min.js',
+          home + 'client/lib/jquery.svgdom.min.js',
+          // home + 'client/lib/jquery.ba-bbq.min.js',
+          // home + 'client/lib/jquery.json.min.js',
+          // home + 'client/lib/sprintf.js',
+          // brat helpers
+          home + '/client/src/configuration.js',
+          home + 'client/src/util.js',
+          home + '/client/src/annotation_log.js',
+          home + '/client/lib/webfont.js',
+          // brat modules
+          home + 'client/src/dispatcher.js',
+          home + 'client/src/url_monitor.js',
+          // home + 'client/src/offline_ajax.js',
+          home + 'client/src/visualizer.js'
+          // home + 'client/src/visualizer_ui.js',
+          // home + 'client/src/spinner.js'
+      );
+      var webFontURLs = [
+          'assets/brat_embed/fonts/Astloch-Bold.ttf',
+          'assets/brat_embed/fonts/PT_Sans-Caption-Web-Regular.ttf',
+          'assets/brat_embed/fonts/Liberation_Sans-Regular.ttf'
+      ];
+      head.ready(function() {
+          var collData = {
+              entity_types: [ {
+                      type   : 'Person', 
+
+                      labels : ['Person', 'Per'],
+                      // Blue is a nice colour for a person?
+                      bgColor: '#7fa2ff',
+                      // Use a slightly darker version of the bgColor for the border
+                      borderColor: 'darken'
+              }, {
+                      type   : 'KeyTerm', 
+
+                      labels : ['KeyTerm', 'Key'],
+                      // Blue is a nice colour for a person?
+                      bgColor: '#7fff10',
+                      // Use a slightly darker version of the bgColor for the border
+                      borderColor: 'darken'
+              }, {
+                      type   : 'Sentiment', 
+
+                      labels : ['Sentiment', 'Senti'],
+                      // Blue is a nice colour for a person?
+                      bgColor: '#7fa2ff',
+                      // Use a slightly darker version of the bgColor for the border
+                      borderColor: 'darken'
+              } ]
+          };
+          var docData = {
+              // Our text of choice
+              text: "Facing a looming Republican-dominated Congress under the right-wing President-elect Donald Trump, gun control advocates warn that local gun restrictions are about to be \"eviscerated.\" Many Republican members of Congress have long sought to pass sweeping national right-to-carry legislation , to force \"reciprocity\" between states when it comes to right-to-carry legislation. Reciprocity legislation has been a major priority of the National Rifle Association (NRA), which endorsed Trump's candidacy. Under such a law, a person with a concealed-carry permit in West Virginia would be able to legally carry a firearm in New York City as well, avoiding the city's lengthy and expensive permitting process. It would also allow residents of areas with strict gun control to travel to states with loose restrictions, purchase a gun, and legally carry that gun when they return back home. The Guardian reported Monday: \"Trump, who himself has a permit to carry a concealed firearm, has already endorsed a new reciprocity law as part of his gun rights platform. Concealed-carry permits from one state 'should be valid in all 50 states,' his platform reads, calling the proposal 'common sense.'\" The president-elect also promised to appoint judges with a right-wing stance on guns to the U.S. Supreme Court. Purchasing a firearm in many locales is already extremely easy, and a \"growing number of states\u201410 and counting [...] require no permit at all to carry a concealed weapon, a policy often called 'constitutional carry,'\" writes the Guardian. The newspaper reports: The Law Center to Prevent Gun Violence argues reciprocity would create a ' lowest common denominator standard' for gun carrying across the country, 'eviscerating state authority to restrict who may carry guns within their borders.' Shannon Watts, the founder of Moms Demand Action for Gun Sense in America, called carry reciprocity 'a dangerous policy.' \"I only hope President-elect Trump recognizes that nine out of 10 Americans, regardless of who they supported for president, want to create a safer America by expanding Brady background checks to every gun sale,\" said Dan Gross, president of the Brady Campaign, a national group that fights for stricter gun control, in response to the presidential election. \"And while we're hopeful we can work with President-elect Trump to reduce gun deaths in this country, we are also prepared to fight with everything we've got to ensure the vision he described on the campaign trail of an America where every domestic abuser, terrorist, and felon can carry a loaded gun anytime, anywhere\u2014where problems are solved with bullets instead of words\u2014will never become reality,\" Gross added. Yet many gun control advocates are fairly pessimistic about their chances of fighting such a law in a Republican-dominated Congress under Trump. Adam Winkler, a gun politics expert at the University of California Los Angeles, explained to the Guardian : \"Right now, the NRA has got its way. It's not clear why it would be looking for major compromises.\"",
+              // The entities entry holds all entity annotations
+              "entities": [ [ "T1", "KeyTerm", [ [ 747, 765 ] ] ], [ "T2", "KeyTerm", [ [ 98, 119 ] ] ], [ "T3", "KeyTerm", [ [ 544, 556 ] ] ], [ "T4", "KeyTerm", [ [ 278, 289 ] ] ], [ "T5", "KeyTerm", [ [ 1037, 1052 ] ] ], [ "T6", "KeyTerm", [ [ 998, 1013 ] ] ], [ "T7", "KeyTerm", [ [ 1724, 1739 ] ] ], [ "T8", "KeyTerm", [ [ 57, 62 ] ] ], [ "T9", "KeyTerm", [ [ 323, 329 ] ] ], [ "T10", "KeyTerm", [ [ 1543, 1560 ] ] ], [ "T11", "Sentiment", [ [ 0, 183 ] ] ], [ "T12", "Sentiment", [ [ 184, 374 ] ] ], [ "T13", "Sentiment", [ [ 375, 499 ] ] ], [ "T14", "Sentiment", [ [ 500, 702 ] ] ], [ "T15", "Sentiment", [ [ 703, 881 ] ] ], [ "T16", "Sentiment", [ [ 882, 913 ] ] ], [ "T17", "Sentiment", [ [ 913, 1053 ] ] ], [ "T18", "Sentiment", [ [ 1054, 1185 ] ] ], [ "T19", "Sentiment", [ [ 1185, 1298 ] ] ], [ "T20", "Sentiment", [ [ 1299, 1538 ] ] ], [ "T21", "Sentiment", [ [ 1539, 1793 ] ] ], [ "T22", "Sentiment", [ [ 1794, 1915 ] ] ], [ "T23", "Sentiment", [ [ 1916, 2274 ] ] ], [ "T24", "Sentiment", [ [ 2275, 2276 ] ] ], [ "T25", "Sentiment", [ [ 2276, 2690 ] ] ], [ "T26", "Sentiment", [ [ 2691, 2835 ] ] ], [ "T27", "Sentiment", [ [ 2836, 2981 ] ] ], [ "T28", "Sentiment", [ [ 2982, 3044 ] ] ] ]
+          };
+
+          Util.embed(
+            'brat',
+            // object containing collection data
+            collData,
+            // object containing document data
+            docData,
+            // Array containing locations of the visualisation fonts
+            webFontURLs
+            );
+      });
+    </script>
+    <link rel="stylesheet" type="text/css" href="assets/brat_embed/style-vis.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/brat_embed/style-ui.css"/>
+    <link rel="shortcut icon" href="http://weaver.nlplab.org/~brat/demo/v1.3/favicon.ico"/>
+  </head>
+  <body>
+    <h1>BRAT Test 1</h1>
+    <div id="brat"></div>
+  </body>
+</html>
