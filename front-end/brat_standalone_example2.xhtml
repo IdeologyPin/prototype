@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>brat</title>
+
+    <link href="assets/brat_embed/jquery-theme/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <link href="http://weaver.nlplab.org/~brat/demo/v1.3/static/jquery-theme/jquery-ui-redmond.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- <script type="text/javascript" src="https://github.com/nlplab/brat/client/lib/head.load.min.js"></script> -->
+    <!-- <script type="text/javascript" src="http://weaver.nlplab.org/~brat/demo/v1.3/client/lib/head.load.min.js"></script> -->
+    <script type="text/javascript" src="http://weaver.nlplab.org/~brat/demo/v1.3/client/lib/head.load.min.js"></script>
+    <script type="text/javascript">
+        home = 'http://weaver.nlplab.org/~brat/demo/v1.3/';
+        // console.log(test);
+        head.js(
+                // libraries
+                home + 'client/lib/jquery.min.js',
+                // home + 'client/lib/jquery-ui.min.js',
+                // home + 'client/lib/jquery-ui.combobox.js',
+                home + 'client/lib/jquery.svg.min.js',
+                home + 'client/lib/jquery.svgdom.min.js',
+                // home + 'client/lib/jquery.ba-bbq.min.js',
+                // home + 'client/lib/jquery.json.min.js',
+                // home + 'client/lib/sprintf.js',
+                // brat helpers
+                home + '/client/src/configuration.js',
+                home + 'client/src/util.js',
+                home + '/client/src/annotation_log.js',
+                home + '/client/lib/webfont.js',
+                // brat modules
+                home + 'client/src/dispatcher.js',
+                home + 'client/src/url_monitor.js',
+                // home + 'client/src/offline_ajax.js',
+                home + 'client/src/visualizer.js'
+                // home + 'client/src/visualizer_ui.js',
+                // home + 'client/src/spinner.js'
+        );
+        var webFontURLs = [
+            'assets/brat_embed/fonts/Astloch-Bold.ttf',
+            'assets/brat_embed/fonts/PT_Sans-Caption-Web-Regular.ttf',
+            'assets/brat_embed/fonts/Liberation_Sans-Regular.ttf'
+        ];
+        head.ready(function () {
+            var collData = {
+                entity_types: [
+                    {
+                        type: 'KeyTerm',
+                        labels: ['KeyTerm', 'Key'],
+                        bgColor: '#22A3CB',
+                        borderColor: 'darken'
+                    }, {
+                        type: 'PosSentiment',
+                        labels: ['Sentiment', 'Pos'],
+                        bgColor: '#2DE891',
+                        borderColor: 'darken'
+                    }, {
+                        type: 'NegSentiment',
+                        labels: ['Sentiment', 'Neg'],
+                        bgColor: '#FAB3BB',
+                        borderColor: 'darken'
+                    }, {
+                        type: 'Entity',
+                        labels: ['Entity', 'Ent'],
+                        bgColor: '#22A3CB',
+                        borderColor: 'darken'
+                    }
+
+
+                ]
+            };
+            var docData = {
+                // Our text of choice
+                text: "BELEN, N.M. (AP) - Democratic lawmakers have named Sen. Peter Wirth of Santa Fe as the new majority floor leader for the New Mexico state Senate to replace departing Sen. Michael Sanchez. Wirth was named majority leader by Democratic senators during a meeting Saturday in Belen. Senate Democrats re-nominated Mary Kay Papen of Las Cruces as Senate president, pending confirmation by the chamber in January. Sen. Michael Padilla of Bernalillo was chosen as majority whip and Sen. Jacob Candelaria of Bernalillo will be majority caucus chair. Democrats will control both legislative chambers next year. Republicans lost control of the House in the Nov. 8 election. Sanchez lost his seat to Republican Greg Baca amid a wave of attack ads from a political committee run by Republican Gov. Susana Martinez's top political adviser.",
+                // The entities entry holds all entity annotations
+                "entities" : [
+        [
+            "T1",
+            "KeyTerm",
+            [
+                [
+                    87,
+                    112
+                ]
+            ]
+        ],
+        [
+            "T2",
+            "KeyTerm",
+            [
+                [
+                    19,
+                    29
+                ]
+            ]
+        ],
+        [
+            "T3",
+            "KeyTerm",
+            [
+                [
+                    91,
+                    99
+                ]
+            ]
+        ],
+        [
+            "T4",
+            "KeyTerm",
+            [
+                [
+                    387,
+                    394
+                ]
+            ]
+        ],
+        [
+            "T5",
+            "KeyTerm",
+            [
+                [
+                    556,
+                    563
+                ]
+            ]
+        ],
+        [
+            "T6",
+            "KeyTerm",
+            [
+                [
+                    742,
+                    751
+                ]
+            ]
+        ],
+        [
+            "T7",
+            "PosSentiment",
+            [
+                [
+                    0,
+                    187
+                ]
+            ]
+        ],
+        [
+            "T8",
+            "PosSentiment",
+            [
+                [
+                    188,
+                    278
+                ]
+            ]
+        ],
+        [
+            "T9",
+            "PosSentiment",
+            [
+                [
+                    407,
+                    540
+                ]
+            ]
+        ],
+        [
+            "T10",
+            "PosSentiment",
+            [
+                [
+                    541,
+                    600
+                ]
+            ]
+        ],
+        [
+            "T11",
+            "NegSentiment",
+            [
+                [
+                    279,
+                    406
+                ]
+            ]
+        ],
+        [
+            "T12",
+            "NegSentiment",
+            [
+                [
+                    601,
+                    662
+                ]
+            ]
+        ],
+        [
+            "T13",
+            "NegSentiment",
+            [
+                [
+                    663,
+                    825
+                ]
+            ]
+        ],
+        [
+            "T14",
+            "Entity",
+            [
+                [
+                    121,
+                    144
+                ]
+            ]
+        ],
+        [
+            "T15",
+            "Entity",
+            [
+                [
+                    279,
+                    386
+                ]
+            ]
+        ],
+        [
+            "T16",
+            "Entity",
+            [
+                [
+                    71,
+                    79
+                ]
+            ]
+        ],
+        [
+            "T17",
+            "Entity",
+            [
+                [
+                    785,
+                    800
+                ]
+            ]
+        ]
+    ]
+            };
+
+            Util.embed(
+                    'brat',
+                    // object containing collection data
+                    collData,
+                    // object containing document data
+                    docData,
+                    // Array containing locations of the visualisation fonts
+                    webFontURLs
+            );
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="assets/brat_embed/style-vis.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/brat_embed/style-ui.css"/>
+    <link rel="shortcut icon" href="http://weaver.nlplab.org/~brat/demo/v1.3/favicon.ico"/>
+</head>
+<body>
+<h1>BRAT Test 1</h1>
+<div id="brat"></div>
+</body>
+</html>

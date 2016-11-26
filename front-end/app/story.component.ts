@@ -1,10 +1,10 @@
 /**
  * Created by sasinda on 9/29/16.
  */
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute, Params }   from '@angular/router';
-import { StoryService, ClusteringService } from './service'
-import { Story } from './models'
+import {Component, OnInit, ElementRef} from '@angular/core';
+import {Router, ActivatedRoute, Params}   from '@angular/router';
+import {StoryService, ClusteringService} from './service'
+import {Story} from './models'
 
 @Component({
     selector: 'story-list',
@@ -23,41 +23,39 @@ import { Story } from './models'
 })
 
 export class StoryComponent implements OnInit {
-	stories = []
+    stories = []
 
-	public storyList = [];
-	public urlList = [];
-	public elementRef;
-	public selectedStory;
-	public clusteringsList;
+    public storyList = [];
+    public urlList = [];
+    public elementRef;
+    public selectedStory;
+    public clusteringsList;
 
-	constructor(private storyService: StoryService, 
-						myElement: ElementRef, 
-				private route: ActivatedRoute,
-				private clusteringService: ClusteringService,
-				private router:Router) {
-        let s=new Story();
-        s._id=1
-        s.headline='Initializing'
-        this.stories=[s]
-        
-
+    constructor(private storyService:StoryService,
+                myElement:ElementRef,
+                private route:ActivatedRoute,
+                private clusteringService:ClusteringService,
+                private router:Router) {
+        let s = new Story();
+        s._id = 1
+        s.headline = 'Initializing'
+        this.stories = [s]
         this.elementRef = myElement;
     }
 
     ngOnInit():void {
-        this.route.params.forEach((params: Params) => {
-		    let id = params['subject_id']; // (+) converts string 'id' to a number
-		    console.log(id);
-		    this.storyService.getTrending(id).then(storyList=>{
-	            this.stories=storyList.stories;
-	            for (var i = 0; i < storyList.stories.length; i++) { 
-	                this.storyList.push(storyList.stories[i]);
+        this.route.params.forEach((params:Params) => {
+            let id = params['subject_id']; // (+) converts string 'id' to a number
+            console.log(id);
+            this.storyService.getTrending(id).then(storyList=> {
+                this.stories = storyList.stories;
+                for (var i = 0; i < storyList.stories.length; i++) {
+                    this.storyList.push(storyList.stories[i]);
                     // console.log(storyList.stories[i].id);
-	                console.log(storyList.stories[i].headline);
-	            }
-	        })
-		});
+                    console.log(storyList.stories[i].headline);
+                }
+            })
+        });
     }
 
     select(item) {
@@ -65,8 +63,7 @@ export class StoryComponent implements OnInit {
         console.log(item);
         this.router.navigate(['/clustering', item.id]);
         // this.clusteringService.getStoryClustering(item.id).then(clusteringsList=>{
-            // this.router.navigate(['/clustering', clusteringsList.clusterings[0]._id]);
-            // OMRI: Right now only taking the first Clustering ID; needs to find better algorithm for this
-        })
+        // this.router.navigate(['/clustering', clusteringsList.clusterings[0]._id]);
+        // OMRI: Right now only taking the first Clustering ID; needs to find better algorithm for this
     }
 }

@@ -1,84 +1,13 @@
-from pygate import *
-from pygate.ext.google_nlp import SentimentAnalyserPR
-from pygate.ext.spacy_io import SpacyDoc
-from pygate.ext.textacy import KeyTermAnnotatorPR
-from pygate.prs import SPMRulePR
-from pygate.ext.relegence_nlp import RelEntityTagger
+
 from app.model import Clustering
 from app.tasks.clustering.clustering_method import ClusteringMethod
+from custom_pygate_prs import *
+from scipy.sparse import hstack
+from sklearn.cluster import KMeans
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.metrics.pairwise import euclidean_distances
+from collections import Counter
 
-
-class DuplicateClearingPR(PR):
-    def __init__(self):
-        self.examined_titles = set()
-
-    def process(self, doc):
-        '''
-        :type SpacyDoc
-        :param doc:
-        :return:
-        '''
-        title = doc["title"]
-        doc.sents
-        if title in self.examined_titles:
-            raise ValueError("Duplicate Article: title"+title)
-        self.examined_titles.add(title)
-
-
-
-class CustomFeatureExtractor(PR):
-
-    def process(self,doc):
-        '''
-        :type doc SpacyDoc
-        :param doc:
-        :return:
-        '''
-        for kt in doc['KeyTerm']:
-            sents=doc.query_overlappedby_y(kt, 'Sentence')
-            list(sents)[0][2].add_relation('key_term', kt)
-
-class SentimentHighlighter(PR):
-
-    def process(self,doc):
-        '''
-        :type doc SpacyDoc
-        :param doc:
-        :return:
-        '''
-        THRESHOLD=0.6
-
-        pos=[]
-        neg=[]
-        for sent in doc.sents:
-            if 'gs_score' in sent.features:
-                score=sent.get_feature('gs_score')
-                if score>THRESHOLD:
-                    ann=Annotation(sent.text, sent.tStart, sent.tEnd, sent.cStart, sent.cEnd, 'PosSentiment',doc)
-                    pos.append(ann)
-                elif score< -1*THRESHOLD:
-                    ann = Annotation(sent.text, sent.tStart, sent.tEnd, sent.cStart, sent.cEnd, 'NegSentiment', doc)
-                    neg.append(ann)
-
-        doc.set_annotation_set('PosSentiment', pos)
-        doc.set_annotation_set('NegSentiment', neg)
-
-class BratEmbeddingToMongoPR(PR):
-
-    def __init__(self, anno_types):
-        self.anno_types=anno_types
-
-    def process(self,doc):
-        art=doc['mongo']
-        id=0
-        art.entities=[]
-        for anno_type in self.anno_types:
-            if anno_type in doc:
-                annots=doc[anno_type]
-                for a in annots:
-                    id+=1
-                    art.entities.append(['T'+str(id), anno_type, [[a.cStart, a.cEnd]]])
-        art.save()
 
 def run_fv_generation_method(articles_collection):
     ann_store = AnnotationStore('Sentence')
@@ -86,8 +15,8 @@ def run_fv_generation_method(articles_collection):
 
     prs = [
         DuplicateClearingPR(),
-        SentimentAnalyserPR('Sentence'),
-        SentimentHighlighter(),
+        #         SentimentAnalyserPR('Sentence'),
+        #         SentimentHighlighter(),
         KeyTermAnnotatorPR(),
         RelEntityTagger(),
         CustomFeatureExtractor(),
@@ -97,11 +26,79 @@ def run_fv_generation_method(articles_collection):
     pipe = Pipeline()
     pipe.setPRs(prs).setCorpus(articles_collection)
 
-    result=pipe.process(5)
+    result = pipe.process()
+
+    sentences = ann_store.annots
+    X = extract_feature_vector(sentences)
+    print 'feature extraction completed!'
+    clust_dict = cluster_sentence_vectors(sentences, X, N_CLUSTERS=2)
+    return clust_dict
 
 
-    for a in ann_store.annots:
-        pass
+def extract_feature_vector(sentences):
+    vect_ent = DictVectorizer()
+    vect_kt = DictVectorizer()
+    entity_list = []
+    kt_list = []
+
+    for sent in sentences:
+        entity_list.append([e['wikidata'] for e in sent.get_relation('entity')])
+        key_terms = [kt.text for kt in sent.get_relation('key_term')]
+        kt_list.append(key_terms)
+        sent['key_terms'] = dict((kt, 1) for kt in key_terms)
+
+    X_ent = vect_ent.fit_transform(Counter(ent) for ent in entity_list)
+    X_kt = vect_kt.fit_transform(Counter(kt) for kt in kt_list)
+    X_sentiment = None
+    X = hstack([X_ent, X_kt])
+    return X
+
+
+def merge_kwd_counts(keywords):
+    """
+        given list of dicts with keywords, merges them into one dict
+    """
+    kwds_aggregation = defaultdict(list)
+    for d in keywords:
+        for key, value in d.iteritems():
+            if key in kwds_aggregation:
+                kwds_aggregation[key] += value
+            else:
+                kwds_aggregation[key] = value
+    return kwds_aggregation
+
+
+def cluster_sentence_vectors(sentences, X, N_CLUSTERS=5):
+    """
+        given vector results and number of clusters return cluster objects
+    """
+    kmeans = KMeans(n_clusters=N_CLUSTERS, random_state=45)
+    cluster_assignments = kmeans.fit_predict(X)
+    centroids = kmeans.cluster_centers_
+
+    cluster_dict = {
+        x: {"vector": centroids[x], "sentences": [], "reduced": False}
+        for x in xrange(len(centroids))}
+
+    temp_cluster_keywords = {x: {} for x in xrange(len(centroids))}
+
+    for i, sent in enumerate(sentences):
+        sent['feature_vector'] = X.toarray()[i]
+        cluster_num = cluster_assignments[i]
+        sent["cluster_num"] = cluster_num
+        dist_to_centroid = euclidean_distances(centroids[cluster_num], sent["feature_vector"])[0][0]
+        sent["dist_to_centroid"] = dist_to_centroid
+        # add to cluster object
+        cluster_dict[cluster_num]["sentences"].append(sent)
+        # merge keyword dictionaries together
+        temp_cluster_keywords[cluster_num] = merge_kwd_counts([temp_cluster_keywords[cluster_num], sent["key_terms"]])
+
+    NUM_KEYWORDS = 10
+    for cluster_num in temp_cluster_keywords:
+        clustered = sorted(temp_cluster_keywords[cluster_num].items(), key=lambda x: x[1])[0:NUM_KEYWORDS]
+        cluster_dict[cluster_num]["keywords"] = [x[0] for x in clustered]
+
+    return cluster_dict
 
 
 
@@ -126,35 +123,35 @@ class FV1ClusteringMethod2(ClusteringMethod):
         clusters= run_fv_generation_method(article_collection)
 
 
-        # art_dict={}
-        # for a in articles:
-        #     art_dict[a.id]=a
-        #
-        # centroids=[]
-        # nodes=defaultdict(lambda :None)
-        # for key, cluster in cluster_dict.iteritems():
-        #     key=str(key)
-        #     centroids.append(Centroid(id=str(key), name=cluster['keywords'][0], tags=cluster['keywords']))
-        #     for sent in cluster['sentences']:
-        #         id=sent[0]
-        #         score=sent[1]
-        #         sent=sentence_objects[id]
-        #         doc=nodes[sent['article_id']]
-        #         if doc==None:
-        #             article=art_dict[sent['article_id']]
-        #             n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)
-        #             nodes[sent['article_id']]=n
-        #             for clust_key in cluster_dict.keys():
-        #                 n.scores[str(clust_key)] = [0]
-        #             n.scores[key] = [score]
-        #         else:
-        #             doc.scores[key].append(score)
-        #
-        # for node in nodes.values():
-        #     for c_id, sent_scores in node.scores.iteritems():
-        #          node.scores[c_id]=sum(sent_scores)/len(sent_scores)
-        #
-        # clustering=self.clustering
-        # clustering.clusters=centroids
-        # clustering.nodes=nodes.values()
-        # clustering.save()
+        art_dict={}
+        for a in articles:
+            art_dict[a.id]=a
+
+        centroids=[]
+        nodes=defaultdict(lambda :None)
+        for key, cluster in cluster_dict.iteritems():
+            key=str(key)
+            centroids.append(Centroid(id=str(key), name=cluster['keywords'][0], tags=cluster['keywords']))
+            for sent in cluster['sentences']:
+                id=sent[0]
+                score=sent[1]
+                sent=sentence_objects[id]
+                doc=nodes[sent['article_id']]
+                if doc==None:
+                    article=art_dict[sent['article_id']]
+                    n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)
+                    nodes[sent['article_id']]=n
+                    for clust_key in cluster_dict.keys():
+                        n.scores[str(clust_key)] = [0]
+                    n.scores[key] = [score]
+                else:
+                    doc.scores[key].append(score)
+
+        for node in nodes.values():
+            for c_id, sent_scores in node.scores.iteritems():
+                 node.scores[c_id]=sum(sent_scores)/len(sent_scores)
+
+        clustering=self.clustering
+        clustering.clusters=centroids
+        clustering.nodes=nodes.values()
+        clustering.save()

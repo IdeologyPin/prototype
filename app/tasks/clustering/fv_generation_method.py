@@ -323,7 +323,7 @@ class FV1ClusteringMethod(ClusteringMethod):
                 id=sent[0]
                 score=sent[1]
                 sent=sentence_objects[id]
-                doc=nodes[sent['article_id']]
+                doc=nodes[sent.doc['article_id']]
                 if doc==None:
                     article=art_dict[sent['article_id']]
                     n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)
