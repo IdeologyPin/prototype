@@ -1,22 +1,33 @@
 /**
  * Created by Omri on 11/27/16.
  */
+declare var Util: any;
+
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute, Params }   from '@angular/router';
 import { BratEmbedService } from './service'
 import { Annotation } from './models'
 
+// import { head } from '../assets/brat_embed/client/head.load.min.js';
+// import { head } from '../assets/brat_embed/client/head.load.min.js';
+// import '../assets/brat_embed/client/lib/jquery.min.js';
+import '../assets/brat_embed/client/lib/jquery.svg.min.js';
+import '../assets/brat_embed/client/lib/jquery.svgdom.min.js';
+import '../assets/brat_embed/client/lib/webfont.js';
+import '../assets/brat_embed/client/src/configuration.js';
+import '../assets/brat_embed/client/src/util.js';
+import '../assets/brat_embed/client/src/annotation_log.js';
+import '../assets/brat_embed/client/src/dispatcher.js';
+import '../assets/brat_embed/client/src/url_monitor.js';
+import '../assets/brat_embed/client/src/visualizer.js';
+
 @Component({
     selector: 'annotation',
-    // template: ` <div class="container" >
-    // 				<div class="title" >
-    //                     Article Source: {{annotation.source}}
-    //                     <br> Article Title: {{annotation.title}}
-    //                     <br> <a href="{{annotation.link}}" target="_blank"> Link to Original </a>
-    //                 </div>
-    // 			</div>
-    //           `
-    templateUrl:'./template/brat.xhtml'
+    templateUrl:'./template/brat.xhtml',
+    styleUrls: [ '../assets/brat_embed/jquery-theme/jquery-ui.css',
+                 '../assets/brat_embed/jquery-theme/jquery-ui-redmond.css', 
+                 '../assets/brat_embed/style-vis.css',
+                 '../assets/brat_embed/style-ui.css']
 })
 
 export class AnnotationComponent implements OnInit {
@@ -37,14 +48,63 @@ export class AnnotationComponent implements OnInit {
     }
 
     ngOnInit():void {
+
         this.route.params.forEach((params:Params) => {
             let id = params['story_id']; // (+) converts string 'id' to a number
-            console.log(id);
             this.annotation = this.embedService.getArticleAnnotation(id);
             // this.embedService.getArticleAnnotation(id).then(storyList=> {
                 // TBD: when service is converted to return promises, implement as callback
             // })
+            
 
+            
         });
+
+        var collData = {
+            entity_types: [
+                {
+                    type: 'KeyTerm',
+                    labels: ['Key Term', 'Key'],
+                    bgColor: '#22A3CB',
+                    borderColor: 'darken'
+                }, {
+                    type: 'PosSentiment',
+                    labels: ['Positive Sentiment', 'Pos'],
+                    bgColor: '#2DE891',
+                    borderColor: 'darken'
+                }, {
+                    type: 'Sentiment',
+                    labels: ['Sentiment', 'Sen'],
+                    bgColor: '#2DE891',
+                    borderColor: 'darken'
+                }, {
+                    type: 'NegSentiment',
+                    labels: ['Negative Sentiment', 'Neg'],
+                    bgColor: '#FAB3BB',
+                    borderColor: 'darken'
+                }, {
+                    type: 'Entity',
+                    labels: ['Entity', 'Ent'],
+                    bgColor: '#22F3CB',
+                    borderColor: 'darken'
+                }]};
+        var docData = {
+            text: this.annotation.text,
+            entities : this.annotation.entities 
+        };
+        var webFontURLs = [
+                '../assets/brat_embed/fonts/Astloch-Bold.ttf',
+                '../assets/brat_embed/fonts/PT_Sans-Caption-Web-Regular.ttf',
+                '../assets/brat_embed/fonts/Liberation_Sans-Regular.ttf'
+            ];
+
+        Util.embed( 'brat',
+                // object containing collection data
+                collData,
+                // object containing document data
+                docData,
+                // Array containing locations of the visualisation fonts
+                webFontURLs
+        );
     }
 }

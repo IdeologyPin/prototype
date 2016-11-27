@@ -31,7 +31,7 @@ const appRoutes:Routes = [
         component: StoryComponent
     },
     {
-        path: 'annotation/:id',
+        path: 'annotation/:story_id',
         component: AnnotationComponent
     }
 ];
