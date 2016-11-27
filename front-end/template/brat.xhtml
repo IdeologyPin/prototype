@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>brat</title>
+
+    <link href="../assets/brat_embed/jquery-theme/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <link href="http://weaver.nlplab.org/~brat/demo/v1.3/static/jquery-theme/jquery-ui-redmond.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- <script type="text/javascript" src="https://github.com/nlplab/brat/client/lib/head.load.min.js"></script> -->
+    <!-- <script type="text/javascript" src="http://weaver.nlplab.org/~brat/demo/v1.3/client/lib/head.load.min.js"></script> -->
+    <script type="text/javascript" src="http://weaver.nlplab.org/~brat/demo/v1.3/client/lib/head.load.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="../assets/brat_embed/style-vis.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/brat_embed/style-ui.css"/>
+    <link rel="shortcut icon" href="http://weaver.nlplab.org/~brat/demo/v1.3/favicon.ico"/>
+</head>
+<body>
+<h1>TEST</h1>
+<div class="title" >
+    Article Source: {{annotation.source}}
+    <br> Article Title: {{annotation.title}}
+    <br> <a href="{{annotation.link}}" target="_blank"> Link to Original </a>
+    <script type="text/javascript">
+        home = 'http://weaver.nlplab.org/~brat/demo/v1.3/';
+        // console.log(test);
+        head.js(
+                // libraries
+                home + 'client/lib/jquery.min.js',
+                // home + 'client/lib/jquery-ui.min.js',
+                // home + 'client/lib/jquery-ui.combobox.js',
+                home + 'client/lib/jquery.svg.min.js',
+                home + 'client/lib/jquery.svgdom.min.js',
+                // home + 'client/lib/jquery.ba-bbq.min.js',
+                // home + 'client/lib/jquery.json.min.js',
+                // home + 'client/lib/sprintf.js',
+                // brat helpers
+                home + '/client/src/configuration.js',
+                home + 'client/src/util.js',
+                home + '/client/src/annotation_log.js',
+                home + '/client/lib/webfont.js',
+                // brat modules
+                home + 'client/src/dispatcher.js',
+                home + 'client/src/url_monitor.js',
+                // home + 'client/src/offline_ajax.js',
+                home + 'client/src/visualizer.js'
+                // home + 'client/src/visualizer_ui.js',
+                // home + 'client/src/spinner.js'
+        );
+        var webFontURLs = [
+            '../assets/brat_embed/fonts/Astloch-Bold.ttf',
+            '../assets/brat_embed/fonts/PT_Sans-Caption-Web-Regular.ttf',
+            '../assets/brat_embed/fonts/Liberation_Sans-Regular.ttf'
+        ];
+        head.ready(function () {
+            var collData = {
+                entity_types: [
+                    {
+                        type: 'KeyTerm',
+                        labels: ['KeyTerm', 'Key'],
+                        bgColor: '#22A3CB',
+                        borderColor: 'darken'
+                    }, {
+                        type: 'PosSentiment',
+                        labels: ['Sentiment', 'Pos'],
+                        bgColor: '#2DE891',
+                        borderColor: 'darken'
+                    }, {
+                        type: 'NegSentiment',
+                        labels: ['Sentiment', 'Neg'],
+                        bgColor: '#FAB3BB',
+                        borderColor: 'darken'
+                    }, {
+                        type: 'Entity',
+                        labels: ['Entity', 'Ent'],
+                        bgColor: '#22A3CB',
+                        borderColor: 'darken'
+                    }
+
+
+                ]
+            };
+            var docData = {
+                // Our text of choice
+                text: "blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah",
+                // The entities entry holds all entity annotations
+                "entities" : [
+                    [ "T1", "KeyTerm", [[ 0, 4 ]]],
+                    [ "T2", "PosSentiment", [[ 6, 10 ]]],
+                    [ "T3", "NegSentiment", [[ 12, 16 ]]],
+                    [ "T4", "Entity", [[ 18, 2 ]]]
+                ]
+            };
+
+            Util.embed(
+                    'brat',
+                    // object containing collection data
+                    collData,
+                    // object containing document data
+                    docData,
+                    // Array containing locations of the visualisation fonts
+                    webFontURLs
+            );
+        });
+    </script>
+</div>
+<div id="brat"></div>
+</body>
+</html>

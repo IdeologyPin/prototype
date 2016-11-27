@@ -52,3 +52,15 @@ export class StoriesList{
     count: number
     stories:Story[]
 }
+
+export class Annotation{
+    _id: string
+    entities: [ string, string,[number[]]][]
+    file_name: string
+    link: string
+    snippet: string
+    source: string
+    story: number
+    text: string
+    title: string
+}

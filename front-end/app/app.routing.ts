@@ -6,6 +6,7 @@ import {Routes, RouterModule} from '@angular/router';
 import {StoryComponent} from './story.component'
 import {ClusterComponent}      from './clust.component';
 import {ClusterListComponent} from "./clust-list.component";
+import {AnnotationComponent} from "./annotation.component";
 
 const appRoutes:Routes = [
     // {
@@ -28,6 +29,10 @@ const appRoutes:Routes = [
     {
         path: 'subject/:subject_id/stories',
         component: StoryComponent
+    },
+    {
+        path: 'annotation/:id',
+        component: AnnotationComponent
     }
 ];
 export const routing:ModuleWithProviders = RouterModule.forRoot(appRoutes);

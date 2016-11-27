@@ -4,7 +4,7 @@
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule }    from '@angular/http';
-import {ClusteringService,StoryService,TaxoService} from './service'
+import {ClusteringService,StoryService,TaxoService,BratEmbedService} from './service'
 import { FormsModule }   from '@angular/forms';
 
 import {AppComponent} from './app.component'
@@ -14,12 +14,13 @@ import {ClusterListComponent} from './clust-list.component'
 import {} from './clust-list.component'
 import {} from './clust-pinned-map.componenet'
 import {StoryComponent} from './story.component'
+import {AnnotationComponent} from './annotation.component'
 import { routing } from './app.routing';
 
 @NgModule({
   imports:[ BrowserModule,HttpModule, routing, FormsModule ],
-  declarations:[AppComponent, SearchComponent, ClusterComponent, ClusterListComponent, StoryComponent],
+  declarations:[AppComponent, SearchComponent, ClusterComponent, ClusterListComponent, StoryComponent, AnnotationComponent],
   bootstrap:[AppComponent],
-  providers:[ClusteringService, StoryService, TaxoService]
+  providers:[ClusteringService, StoryService, TaxoService, BratEmbedService]
 })
 export class AppModule { }

@@ -14,7 +14,7 @@ import {Story} from './models'
                         <ul *ngFor='let item of storyList; let i=index' >
                             <li *ngIf="i<10">
                                 <a  (click)='select(item)'  >{{item.headline}} </a>
-                                <div class="article_link"> <a href={{item.url}} target="_blank"> [Original]</a></div>
+                                <div class="article_link"> <a href={{item.url}} target="_blank"> [Example]</a></div>
                             </li>
                         </ul>
                     </div>
@@ -37,7 +37,7 @@ export class StoryComponent implements OnInit {
                 private clusteringService:ClusteringService,
                 private router:Router) {
         let s = new Story();
-        s._id = 1
+        s._id = "1"
         s.headline = 'Initializing'
         this.stories = [s]
         this.elementRef = myElement;
