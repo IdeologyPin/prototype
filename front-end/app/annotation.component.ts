@@ -3,7 +3,7 @@
  */
 declare var Util: any;
 
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params }   from '@angular/router';
 import { BratEmbedService } from './service'
 import { Annotation } from './models'
@@ -27,7 +27,8 @@ import '../assets/brat_embed/client/src/visualizer.js';
     styleUrls: [ '../assets/brat_embed/jquery-theme/jquery-ui.css',
                  '../assets/brat_embed/jquery-theme/jquery-ui-redmond.css', 
                  '../assets/brat_embed/style-vis.css',
-                 '../assets/brat_embed/style-ui.css']
+                 '../assets/brat_embed/style-ui.css'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class AnnotationComponent implements OnInit {
