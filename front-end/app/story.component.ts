@@ -12,10 +12,10 @@ import {Story} from './models'
     			<div class="container" >
     				<div class="stories" *ngIf="storyList.length > 0">
                         <ul *ngFor='let item of storyList; let i=index' >
-                            <li *ngIf="i<10">
+                            <div *ngIf="i<10" class="list-group-item">
                                 <a  (click)='select(item)'  >{{item.headline}} </a>
                                 <div class="article_link"> <a href={{item.url}} target="_blank"> [Example]</a></div>
-                            </li>
+                            </div>
                         </ul>
                     </div>
     			</div>

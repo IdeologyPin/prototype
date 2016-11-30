@@ -19,9 +19,11 @@ import { Clustering, Node, Cluster }         from "./models";
                     <div *ngFor="let cluster of clustering.clusters">
                         <p> Cluster  : {{cluster.name}}</p>
                          <div id="cluster{{cluster.id}}" class="list-group">
-                            <div *ngFor="let node of cluster.nodes" class="list-group-item">
+                            <div *ngFor="let node of cluster.nodes; let i = index" >
+                                <div *ngIf="i<3" class="list-group-item">
                                 {{node.label}} <!-- <a href="{{node.link}}" target="_blank">See In-Depth Analysis</a> -->
-                                <a (click)='route_annotation(node)' >See In-Depth Analysis</a>
+                                <a  (click)='route_annotation(node)' >See In-Depth Analysis</a>
+                                </div>
                             </div>
                          </div>            
                     </div>
