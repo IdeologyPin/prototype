@@ -3,7 +3,7 @@
  */
 import { Component, Input, ElementRef }      from '@angular/core';
 import { ClusteringService }                 from './service'
-import { ActivatedRoute, Params }            from '@angular/router';
+import { ActivatedRoute, Params, Router }            from '@angular/router';
 import { Location }                          from '@angular/common';
 import { Clustering, Node, Cluster }         from "./models";
 
@@ -20,7 +20,8 @@ import { Clustering, Node, Cluster }         from "./models";
                         <p> Cluster  : {{cluster.name}}</p>
                          <div id="cluster{{cluster.id}}" class="list-group">
                             <div *ngFor="let node of cluster.nodes" class="list-group-item">
-                                {{node.label}} <a href="{{node.link}}" target="_blank">view</a>
+                                {{node.label}} <!-- <a href="{{node.link}}" target="_blank">See In-Depth Analysis</a> -->
+                                <a (click)='route_annotation(node)' >See In-Depth Analysis</a>
                             </div>
                          </div>            
                     </div>
@@ -33,7 +34,7 @@ export class ClusterListComponent {
 
 
 
-    constructor(private clusteringService:ClusteringService, private route:ActivatedRoute) {
+    constructor(private clusteringService:ClusteringService, private route:ActivatedRoute, private router:Router) {
 
     }
 
@@ -69,5 +70,13 @@ export class ClusterListComponent {
 
         // var bar = document.getElementById("bar");
         // Sortable.create(bar, {group: 'clusters'})
+    }
+
+    route_annotation(node) {
+        console.log(node);
+        this.router.navigate(['/annotation', node.article]);
+        // this.clusteringService.getStoryClustering(item.id).then(clusteringsList=>{
+        // this.router.navigate(['/clustering', clusteringsList.clusterings[0]._id]);
+        // OMRI: Right now only taking the first Clustering ID; needs to find better algorithm for this
     }
 }

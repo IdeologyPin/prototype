@@ -71,7 +71,7 @@ def parse_articles(articles):
     docs=[]
     for i, art in enumerate(articles):
         doc={}
-        doc["parsed_content"] = parser(art.content)
+        doc["parsed_content"] = parser(art.text)
         doc["id"]=art.article_id
         doc["title"]=art.title
         docs.append(doc)
@@ -323,7 +323,7 @@ class FV1ClusteringMethod(ClusteringMethod):
                 id=sent[0]
                 score=sent[1]
                 sent=sentence_objects[id]
-                doc=nodes[sent.doc['article_id']]
+                doc=nodes[sent['article_id']]
                 if doc==None:
                     article=art_dict[sent['article_id']]
                     n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)

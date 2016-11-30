@@ -123,35 +123,35 @@ class FV1ClusteringMethod2(ClusteringMethod):
         clusters= run_fv_generation_method(article_collection)
 
 
-        art_dict={}
-        for a in articles:
-            art_dict[a.id]=a
-
-        centroids=[]
-        nodes=defaultdict(lambda :None)
-        for key, cluster in cluster_dict.iteritems():
-            key=str(key)
-            centroids.append(Centroid(id=str(key), name=cluster['keywords'][0], tags=cluster['keywords']))
-            for sent in cluster['sentences']:
-                id=sent[0]
-                score=sent[1]
-                sent=sentence_objects[id]
-                doc=nodes[sent['article_id']]
-                if doc==None:
-                    article=art_dict[sent['article_id']]
-                    n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)
-                    nodes[sent['article_id']]=n
-                    for clust_key in cluster_dict.keys():
-                        n.scores[str(clust_key)] = [0]
-                    n.scores[key] = [score]
-                else:
-                    doc.scores[key].append(score)
-
-        for node in nodes.values():
-            for c_id, sent_scores in node.scores.iteritems():
-                 node.scores[c_id]=sum(sent_scores)/len(sent_scores)
-
-        clustering=self.clustering
-        clustering.clusters=centroids
-        clustering.nodes=nodes.values()
-        clustering.save()
+        # art_dict={}
+        # for a in articles:
+        #     art_dict[a.id]=a
+        #
+        # centroids=[]
+        # nodes=defaultdict(lambda :None)
+        # for key, cluster in cluster_dict.iteritems():
+        #     key=str(key)
+        #     centroids.append(Centroid(id=str(key), name=cluster['keywords'][0], tags=cluster['keywords']))
+        #     for sent in cluster['sentences']:
+        #         id=sent[0]
+        #         score=sent[1]
+        #         sent=sentence_objects[id]
+        #         doc=nodes[sent['article_id']]
+        #         if doc==None:
+        #             article=art_dict[sent['article_id']]
+        #             n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)
+        #             nodes[sent['article_id']]=n
+        #             for clust_key in cluster_dict.keys():
+        #                 n.scores[str(clust_key)] = [0]
+        #             n.scores[key] = [score]
+        #         else:
+        #             doc.scores[key].append(score)
+        #
+        # for node in nodes.values():
+        #     for c_id, sent_scores in node.scores.iteritems():
+        #          node.scores[c_id]=sum(sent_scores)/len(sent_scores)
+        #
+        # clustering=self.clustering
+        # clustering.clusters=centroids
+        # clustering.nodes=nodes.values()
+        # clustering.save()

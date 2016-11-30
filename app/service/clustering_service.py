@@ -11,12 +11,11 @@ wenv.init_spacy()
 METHODS = {
     'DOC2VEC': None,
     'LDA': None,
-    'FV1': FV1ClusteringMethod2()
+    'FV1': FV1ClusteringMethod()
 }
 
 rs=RelegenceService()
 rq=jq.get_RQ()
-
 
 class ClusteringService():
 
@@ -36,14 +35,14 @@ class ClusteringService():
 
         clusterings = Clustering.by_collection_id(story_id)
         #debug run
-        METHODS[method].run_clustering(collection)
+        # METHODS[method].run_clustering(collection)
 
         if clusterings==None or len(clusterings)==0:
-            #run as async job
+            # run as async job
             # job = rq.enqueue(METHODS[method].run_clustering, collection)
-            #run in same thread
-            # METHODS[method].run_clustering(collection)
-            pass
+            # run in same thread
+            METHODS[method].run_clustering(collection)
+
 
         clusterings=Clustering.by_collection_id(story_id)
         dto=ClusteringListDto.from_mongo(clusterings)
