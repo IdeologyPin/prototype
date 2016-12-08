@@ -18,7 +18,10 @@ class RelegenceService(object):
             articles=s['articles']
             for a in articles:
                 fname=a['id'].replace('/','|')
-                amodel=Article(article_id=fname, story=smodel, source=a['source']['title'], link=a['link'], title=a['title'], snippet=a['snippet'], author=a['author']['name'], text=a['content'], file_name=fname)
+                amodel=Article(article_id=fname, story=smodel, source=a['source']['title'], \
+                               link=a['link'], title=a['title'], snippet=a['snippet'], \
+                               author=a['author']['name'], text=a['content'], file_name=fname, \
+                               domain_id=a['source']['id'], domain_name=a['source']['title'])
                 amodel.save()
         return Article.find_by_story(story)
 
