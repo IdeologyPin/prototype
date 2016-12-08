@@ -40,17 +40,20 @@ def extract_feature_vector(sentences):
     vect_kt = DictVectorizer()
     entity_list = []
     kt_list = []
+    sentiment_list = []
+    # domain_list = []
 
     for sent in sentences:
         entity_list.append([e['wikidata'] for e in sent.get_relation('entity')])
         key_terms = [kt.text for kt in sent.get_relation('key_term')]
         kt_list.append(key_terms)
         sent['key_terms'] = dict((kt, 1) for kt in key_terms)
-
+        sentiment_list.append([sent.get_feature('gs_magnitude'), sent.get_feature('gs_score')])
+ 
     X_ent = vect_ent.fit_transform(Counter(ent) for ent in entity_list)
     X_kt = vect_kt.fit_transform(Counter(kt) for kt in kt_list)
     X_sentiment = None
-    X = hstack([X_ent, X_kt])
+    X = hstack([X_ent, X_kt, sentiment_list])
     return X
 
 
