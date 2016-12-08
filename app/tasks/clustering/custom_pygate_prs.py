@@ -39,6 +39,7 @@ class CustomFeatureExtractor(PR):
         for entity in doc['Entity']:
             if len(entity.text)<200:
                 s.add_relation('entity', entity)
+        s.add_feature('domain_id', domain_id)
 
 
 class SentimentHighlighter(PR):

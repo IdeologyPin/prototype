@@ -54,6 +54,8 @@ class Article(Document):
     published = DateTimeField();
     author = StringField();
     text = StringField();
+    domain_id = StringField();
+    domain_name = StringField();
     #annotations
     entities=ListField();
 
