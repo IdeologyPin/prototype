@@ -43,17 +43,19 @@ class CustomFeatureExtractor(PR):
 #             s.set_feature('key_terms', s.get_relation('key_term'))
         for entity in doc['Entity']:
             if len(entity.text)<200:
+                sents = doc.query_overlappedby_y(entity, 'Sentence')
+                s = sents[0]
                 s.add_relation('entity', entity)
-        s.add_feature('domain_id', domain_id)
 
-        for sent in doc['Sentence']:
+
+        for sent in doc['Sentence']: #type: Annotation
             #watever the filtering
-            sent #type: Annotation
             has_kt=bool(sent.get_relation('key_term'))
             has_ent=bool(sent.get_relation('entity'))
 
             if (self.kt and has_kt) or (self.ent and has_ent) or self.all_sent:
                 sent.set_attribute('FSentence', True)
+                sent.set_feature('source_id', doc['source_id'])
 
 
 

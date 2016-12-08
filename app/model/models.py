@@ -37,6 +37,8 @@ class Story(Document):
     mag_score = IntField();
     num_total_docs = IntField();
     num_original_docs = IntField();
+    topic_creation_time= DateTimeField();
+    last_topic_activity_time = DateTimeField();
 
     @classmethod
     def find_by_id(cls, story_id):
@@ -47,6 +49,7 @@ class Article(Document):
     article_id = StringField(primary_key=True);
     story = ReferenceField(Story);
     source = StringField();
+    source_id= StringField();
     link = StringField();
     title = StringField();
     snippet = StringField();
@@ -54,8 +57,7 @@ class Article(Document):
     published = DateTimeField();
     author = StringField();
     text = StringField();
-    domain_id = StringField();
-    domain_name = StringField();
+
     #annotations
     entities=ListField();
 

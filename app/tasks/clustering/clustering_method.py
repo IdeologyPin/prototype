@@ -1,5 +1,5 @@
 from app.data import RelegenceService
-from app.model import Clustering
+from app.model import Clustering, Article
 from app.tasks.task import Task
 
 import sys
@@ -74,11 +74,13 @@ class StoryCollection(ArticleCollection):
 
     def iter_docs(self):
         articles=self.get_articles()
-        for a in articles:
+        for a in articles: #type: Article
+
             sdoc=SpacyDoc(a.text)
             sdoc['mongo']= a
             sdoc["id"] = a.article_id
             sdoc["title"] = a.title
             sdoc['url']=a.link
+            sdoc['source_id']=a.source_id
             yield sdoc
 

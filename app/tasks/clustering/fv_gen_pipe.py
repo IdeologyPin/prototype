@@ -15,8 +15,8 @@ def run_fv_generation_method(articles_collection):
 
     prs = [
         DuplicateClearingPR(),
-        #         SentimentAnalyserPR('Sentence'),
-        #         SentimentHighlighter(),
+        SentimentAnalyserPR('Sentence'),
+        SentimentHighlighter(),
         KeyTermAnnotatorPR(),
         RelEntityTagger(),
         CustomFeatureExtractor(kt=True, ent=True, all_sent=False),
@@ -26,7 +26,7 @@ def run_fv_generation_method(articles_collection):
     pipe = Pipeline()
     pipe.setPRs(prs).setCorpus(articles_collection)
 
-    result = pipe.process()
+    result = pipe.process(1)
 
     sentences = ann_store.annots
     X = extract_feature_vector(sentences)
@@ -52,7 +52,6 @@ def extract_feature_vector(sentences):
  
     X_ent = vect_ent.fit_transform(Counter(ent) for ent in entity_list)
     X_kt = vect_kt.fit_transform(Counter(kt) for kt in kt_list)
-    X_sentiment = None
     X = hstack([X_ent, X_kt, sentiment_list])
     return X
 
