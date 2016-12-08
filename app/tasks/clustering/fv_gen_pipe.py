@@ -10,7 +10,7 @@ from collections import Counter
 
 
 def run_fv_generation_method(articles_collection):
-    ann_store = AnnotationStore('Sentence')
+    ann_store = AnnotationStore('Sentence', filterby_attrib_exist='FSentence')
     doc_store = DocumentStore('~')
 
     prs = [
@@ -19,7 +19,7 @@ def run_fv_generation_method(articles_collection):
         #         SentimentHighlighter(),
         KeyTermAnnotatorPR(),
         RelEntityTagger(),
-        CustomFeatureExtractor(),
+        CustomFeatureExtractor(kt=True, ent=True, all_sent=False),
         BratEmbeddingToMongoPR(['KeyTerm', 'PosSentiment', 'NegSentiment', 'Entity']),
         ann_store, doc_store]
 

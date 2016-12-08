@@ -11,7 +11,7 @@ wenv.init_spacy()
 METHODS = {
     'DOC2VEC': None,
     'LDA': None,
-    'FV1': FV1ClusteringMethod()
+    'FV1': FV1ClusteringMethod2()
 }
 
 rs=RelegenceService()
@@ -43,6 +43,7 @@ class ClusteringService():
             # run in same thread
             METHODS[method].run_clustering(collection)
 
+        METHODS[method].run_clustering(collection)
 
         clusterings=Clustering.by_collection_id(story_id)
         dto=ClusteringListDto.from_mongo(clusterings)

@@ -25,6 +25,11 @@ class DuplicateClearingPR(PR):
 
 class CustomFeatureExtractor(PR):
 
+    def __init__(self, kt=False, ent=False, all_sent =True):
+        self.kt = kt
+        self.ent = ent
+        self.all_sent = all_sent
+
     def process(self,doc):
         '''
         :type doc SpacyDoc
@@ -39,6 +44,16 @@ class CustomFeatureExtractor(PR):
         for entity in doc['Entity']:
             if len(entity.text)<200:
                 s.add_relation('entity', entity)
+
+        for sent in doc['Sentence']:
+            #watever the filtering
+            sent #type: Annotation
+            has_kt=bool(sent.get_relation('key_term'))
+            has_ent=bool(sent.get_relation('entity'))
+
+            if (self.kt and has_kt) or (self.ent and has_ent) or self.all_sent:
+                sent.set_attribute('FSentence', True)
+
 
 
 class SentimentHighlighter(PR):
