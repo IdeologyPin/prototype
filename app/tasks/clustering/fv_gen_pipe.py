@@ -1,5 +1,5 @@
 
-from app.model import Clustering
+from app.model import Clustering, Centroid, Node
 from app.tasks.clustering.clustering_method import ClusteringMethod
 from custom_pygate_prs import *
 from scipy.sparse import hstack
@@ -15,8 +15,8 @@ def run_fv_generation_method(articles_collection):
 
     prs = [
         DuplicateClearingPR(),
-        SentimentAnalyserPR('Sentence'),
-        SentimentHighlighter(),
+        # SentimentAnalyserPR('Sentence'),
+        # SentimentHighlighter(),
         KeyTermAnnotatorPR(),
         RelEntityTagger(),
         CustomFeatureExtractor(kt=True, ent=True, all_sent=False),
@@ -26,7 +26,7 @@ def run_fv_generation_method(articles_collection):
     pipe = Pipeline()
     pipe.setPRs(prs).setCorpus(articles_collection)
 
-    result = pipe.process(1)
+    result = pipe.process(5)
 
     sentences = ann_store.annots
     X = extract_feature_vector(sentences)
@@ -40,7 +40,7 @@ def extract_feature_vector(sentences):
     vect_kt = DictVectorizer()
     entity_list = []
     kt_list = []
-    sentiment_list = []
+    # sentiment_list = []
     # domain_list = []
 
     for sent in sentences:
@@ -48,11 +48,11 @@ def extract_feature_vector(sentences):
         key_terms = [kt.text for kt in sent.get_relation('key_term')]
         kt_list.append(key_terms)
         sent['key_terms'] = dict((kt, 1) for kt in key_terms)
-        sentiment_list.append([sent.get_feature('gs_magnitude'), sent.get_feature('gs_score')])
+        # sentiment_list.append([sent.get_feature('gs_magnitude'), sent.get_feature('gs_score')])
  
     X_ent = vect_ent.fit_transform(Counter(ent) for ent in entity_list)
     X_kt = vect_kt.fit_transform(Counter(kt) for kt in kt_list)
-    X = hstack([X_ent, X_kt, sentiment_list])
+    X = hstack([X_ent, X_kt]) # ,sentiment_list
     return X
 
 
@@ -125,35 +125,31 @@ class FV1ClusteringMethod2(ClusteringMethod):
         clusters= run_fv_generation_method(article_collection)
 
 
-        # art_dict={}
-        # for a in articles:
-        #     art_dict[a.id]=a
-        #
-        # centroids=[]
-        # nodes=defaultdict(lambda :None)
-        # for key, cluster in cluster_dict.iteritems():
-        #     key=str(key)
-        #     centroids.append(Centroid(id=str(key), name=cluster['keywords'][0], tags=cluster['keywords']))
-        #     for sent in cluster['sentences']:
-        #         id=sent[0]
-        #         score=sent[1]
-        #         sent=sentence_objects[id]
-        #         doc=nodes[sent['article_id']]
-        #         if doc==None:
-        #             article=art_dict[sent['article_id']]
-        #             n=Node(article=sent['article_id'], span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)
-        #             nodes[sent['article_id']]=n
-        #             for clust_key in cluster_dict.keys():
-        #                 n.scores[str(clust_key)] = [0]
-        #             n.scores[key] = [score]
-        #         else:
-        #             doc.scores[key].append(score)
-        #
-        # for node in nodes.values():
-        #     for c_id, sent_scores in node.scores.iteritems():
-        #          node.scores[c_id]=sum(sent_scores)/len(sent_scores)
-        #
-        # clustering=self.clustering
-        # clustering.clusters=centroids
-        # clustering.nodes=nodes.values()
-        # clustering.save()
+
+
+        centroids=[]
+        nodes=defaultdict(lambda :None)
+        for key, cluster in clusters.iteritems():
+            key=str(key)
+            centroids.append(Centroid(id=key, name=cluster['keywords'][0], tags=cluster['keywords']))
+            for sent in cluster['sentences']:
+                score=sent['dist_to_centroid']
+                node=nodes[sent.doc['id']]
+                if node == None:
+                    article=sent.doc['mongo']
+                    node=Node(article=sent.doc['id'] , span_type='Document', scores={}, label=article.title+" "+article.source, link=article.link)
+                    nodes[sent.doc['id']]=node
+                    for clust_key in clusters.keys():
+                        node.scores[str(clust_key)] = [0]
+                    node.scores[key] = [score]
+                else:
+                    node.scores[key].append(score)
+
+        for node in nodes.values():
+            for c_id, sent_scores in node.scores.iteritems():
+                 node.scores[c_id]=sum(sent_scores)/len(sent_scores)
+
+        clustering=self.clustering
+        clustering.clusters=centroids
+        clustering.nodes=nodes.values()
+        clustering.save()
