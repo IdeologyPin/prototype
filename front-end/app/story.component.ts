@@ -8,7 +8,12 @@ import {Story} from './models'
 
 @Component({
     selector: 'story-list',
-    template: ` analyzed stories table
+    template: ` 
+                Please select analysis method: <select>
+                    <option value="FV1">FV1</option>
+                    <option value="LDA">LDA (TBD)</option>
+                </select> <br>
+                Top Trending Stories About
     			<div class="container" >
     				<div class="stories" *ngIf="storyList.length > 0">
                         <ul *ngFor='let item of storyList; let i=index' >
@@ -30,6 +35,7 @@ export class StoryComponent implements OnInit {
     public elementRef;
     public selectedStory;
     public clusteringsList;
+    public subject;
 
     constructor(private storyService:StoryService,
                 myElement:ElementRef,
@@ -41,6 +47,7 @@ export class StoryComponent implements OnInit {
         s.headline = 'Initializing'
         this.stories = [s]
         this.elementRef = myElement;
+        this.subject = 'temp';
     }
 
     ngOnInit():void {
