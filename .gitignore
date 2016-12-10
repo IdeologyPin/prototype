@@ -16,3 +16,5 @@ front-end/typings/
 test.py
 
 **/*.log
+
+app/tasks/clustering/textacy_keyterms.py
