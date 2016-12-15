@@ -14,8 +14,9 @@ class RelegenceService(object):
         if story==None:
             s=relegence_API.stories.by_story_id(story_id, {'numDocs': 100})
             story=smodel=Story(story_id=s['id'], title=s['title'], mag_score=s['magScore'],
-                               num_total_docs=s['numTotalDocs'], num_original_docs=s['numOriginalDocs'],
-                               topic_creation_time= s['topicCreationTime'], last_topic_activity_time = s['lastTopicActivityTime'] )
+                               num_total_docs=s['numTotalDocs'], num_original_docs=s['numOriginalDocs']
+                               # ,topic_creation_time= s['topicCreationTime'], last_topic_activity_time = s['lastTopicActivityTime']
+                               )
             smodel.save()
             articles=s['articles']
             for a in articles:

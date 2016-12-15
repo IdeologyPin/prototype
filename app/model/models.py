@@ -1,7 +1,7 @@
 from mongoengine import *
 
 def init_connection():
-    connect('perspect_db')
+    connect('perspect_db_v2')
 
 
 class Meta(Document):

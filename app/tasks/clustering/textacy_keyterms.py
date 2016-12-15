@@ -59,7 +59,7 @@ def sgrank(doc, window_width=1500, n_keyterms=10, idf=None):
     # build full list of candidate terms
     terms = list(itertoolz.concat(
         extract.ngrams(doc, n, filter_stops=True, filter_punct=True, filter_nums=False,
-                       good_pos_tags={'NOUN', 'ADJ'}, min_freq=min_term_freq)
+                       good_pos_tags={'NOUN', 'ADJ', 'PROPN'}, min_freq=min_term_freq)
         for n in range(1, 7)))
     # if inverse document frequencies available, also add verbs
     # verbs without IDF downweighting dominate the results, and not in a good way

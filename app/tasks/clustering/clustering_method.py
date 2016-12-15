@@ -78,9 +78,10 @@ class StoryCollection(ArticleCollection):
 
             sdoc=SpacyDoc(a.text)
             sdoc['mongo']= a
-            sdoc["id"] = a.article_id
             sdoc["title"] = a.title
             sdoc['url']=a.link
             sdoc['source_id']=a.source_id
+            sdoc['source']=a.source
+            sdoc['id']=a.article_id
             yield sdoc
 

@@ -50,6 +50,7 @@ export class Story{
 
 export class StoriesList{
     count: number
+    title: string
     stories:Story[]
 }
 
@@ -63,4 +64,15 @@ export class Annotation{
     story: number
     text: string
     title: string
+}
+
+export class EntityClustering{
+    id: number
+    name: string
+    positive: number[]
+    negative: number[]
+}
+
+export class entityArticles{
+    articles: {}
 }

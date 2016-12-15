@@ -7,12 +7,15 @@ import {StoryComponent} from './story.component'
 import {ClusterComponent}      from './clust.component';
 import {ClusterListComponent} from "./clust-list.component";
 import {AnnotationComponent} from "./annotation.component";
+import {EntityDiveComponent} from "./entitydive.component";
+import {AppComponent} from "./app.component";
 
 const appRoutes:Routes = [
     // {
     //     path: '',
-    //     // redirectTo: '/stories',
+    //     redirectTo: '/app',
     //     pathMatch: 'full'
+    //     // component: AppComponent
     // },
     {
         path: 'clustering/:id',
@@ -33,6 +36,10 @@ const appRoutes:Routes = [
     {
         path: 'annotation/:story_id',
         component: AnnotationComponent
+    },
+    {
+        path: 'deepdive/:story_id',
+        component: EntityDiveComponent
     }
 ];
 export const routing:ModuleWithProviders = RouterModule.forRoot(appRoutes);
