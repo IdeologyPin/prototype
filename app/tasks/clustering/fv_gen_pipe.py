@@ -15,8 +15,8 @@ def run_fv_generation_method(articles_collection):
 
     prs = [
         DuplicateClearingPR(),
-        # SentimentAnalyserPR('Sentence'),
-        # SentimentHighlighter(),
+        SentimentAnalyserPR('Sentence'),
+        SentimentHighlighter(),
         KeyTermAnnotatorPR(),
         RelEntityTagger(),
         CustomFeatureExtractor(kt=True, ent=True, all_sent=False),

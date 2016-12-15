@@ -86,6 +86,62 @@ export class TaxoService {
 }
 
 @Injectable()
+export class EntityDiveService {
+
+    // private api_url = API_HOST + '/taxonomy/subjects/';
+
+    private title = "More minorities buying guns following Donald Trump’s election";
+    private storyID = 801545936543309824;
+    private entities = ["Donald Trump", "gun control measures", "Smith & Wesson", "minorities"];
+    private clusters = {
+        "Donald Trump": {"positive": [], "negative": [0,1,2]},
+        "gun control measures": {"positive": [0,2], "negative": [1]},
+        "Smith & Wesson": {"positive": [1,2], "negative": [0]},
+        "minorities": {"positive": [0], "negative": [1,2]}
+    };
+
+    private articles = {
+        0:{"id":"eL2Ks4|1479997942658201000", "title":"Trump's Presidency Is Likely To Have A Big Effect On US Gun Sales", "source":"Newsy Partner Feed", url:"http://www.newsy.com/videos/gun-stores-report-decrease-in-sales-after-trump-s-election/", "publish_date": "2016-11-24"},
+        1:{"id":"A1fVb6|148002575367670500", "title":"Gun sales among black community surges after Trump’s victory due to fears of racism", "source":"TheBlaze.com", url:"http://www.theblaze.com/news/2016/11/24/gun-sales-among-black-community-surges-after-trumps-victory-due-to-fears-of-racism/", "publish_date": "2016-11-24"},
+        2:{"id":"oaVWlG|1479963106856234000", "title":"Gun Store Owners Seeing Slow Down In Sales Since Trump Victory", "source":"CBS Pittsburgh", url:"http://pittsburgh.cbslocal.com/2016/11/23/gun-store-owners-seeing-slow-down-in-sales-since-trump-victory/", "publish_date": "2016-11-23"}
+    };
+
+    constructor(private http:Http) {
+    }
+
+    getArticleInfoByID(articleID):{} {
+        return this.articles[articleID];
+    }
+
+    getAllEntities():String[] {
+        return this.entities;
+    }
+
+    getClustersByEntity(entityName):{} {
+        return this.clusters[entityName];
+    }
+
+    getAllClusterings():{} {
+        return this.clusters;
+    }
+
+    getAllArticleDetails():{} {
+        return this.articles;
+    }
+
+    getTitle():string {
+        return this.title
+    }
+
+
+    private handleError(error:any):Promise<any> {
+        console.error('An error occurred', error); // for demo purposes only
+        return Promise.reject(error.message || error);
+    }
+}
+
+
+@Injectable()
 export class BratEmbedService {
 
     // TBD, create API endpoint

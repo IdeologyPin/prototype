@@ -13,13 +13,15 @@ import {Story} from './models'
                     <option value="FV1">FV1</option>
                     <option value="LDA">LDA (TBD)</option>
                 </select> <br>
-                Top Trending Stories About
+                Top Trending Stories
     			<div class="container" >
     				<div class="stories" *ngIf="storyList.length > 0">
                         <ul *ngFor='let item of storyList; let i=index' >
                             <div *ngIf="i<10" class="list-group-item">
                                 <a  (click)='select(item)'  >{{item.headline}} </a>
                                 <div class="article_link"> <a href={{item.url}} target="_blank"> [Example]</a></div>
+                                <div class="deep_dive_link"><a (click) = 'deepdive(item)'>[Entity Deep Dive]</a></div>
+                                <div class="deep_dive_link"><a (click) = 'select(item)'>[Analysis Results]</a></div>
                             </div>
                         </ul>
                     </div>
@@ -36,6 +38,7 @@ export class StoryComponent implements OnInit {
     public selectedStory;
     public clusteringsList;
     public subject;
+
 
     constructor(private storyService:StoryService,
                 myElement:ElementRef,
@@ -55,6 +58,7 @@ export class StoryComponent implements OnInit {
             let id = params['subject_id']; // (+) converts string 'id' to a number
             console.log(id);
             this.storyService.getTrending(id).then(storyList=> {
+                console.log(storyList);
                 this.stories = storyList.stories;
                 for (var i = 0; i < storyList.stories.length; i++) {
                     this.storyList.push(storyList.stories[i]);
@@ -72,5 +76,12 @@ export class StoryComponent implements OnInit {
         // this.clusteringService.getStoryClustering(item.id).then(clusteringsList=>{
         // this.router.navigate(['/clustering', clusteringsList.clusterings[0]._id]);
         // OMRI: Right now only taking the first Clustering ID; needs to find better algorithm for this
+    }
+
+    deepdive(item) {
+        console.log("test button")
+        this.selectedStory = item;
+        console.log(item);
+        this.router.navigate(['/deepdive', item.id]);
     }
 }
