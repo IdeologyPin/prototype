@@ -57,6 +57,30 @@ class CustomFeatureExtractor(PR):
                 sent.set_attribute('FSentence', True)
                 sent.set_feature('source_id', doc['source_id'])
 
+class CustomEntityFeatureExtractor(PR):
+
+    def __init__(self, ent_id ):
+        self.ent_id
+
+    def process(self,doc):
+        doc #type: SpacyDoc
+        for sent in doc['Sentence']:  # type: Annotation
+            ents=doc.query_overlappedby_y(sent, 'Entity')
+            ent_ids=[ent['wikidata'] for ent in ents if 'wikidata' in ent]
+            if self.ent_id in ent_ids:
+                sent.set_attribute('FSentence', True)
+
+# class CustomKTFeatureExtractor(PR):
+#     def __init__(self, kt):
+#         self.kt
+#
+#     def process(self, doc):
+#         doc  # type: SpacyDoc
+#         for sent in doc['Sentence']:  # type: Annotation
+#             ents = doc.query_overlappedby_y(sent, 'KeyTerm')
+#             ent_ids = [ent['wikidata'] for ent in ents if 'wikidata' in ent]
+#             if self.ent_id in ent_ids:
+#                 sent.set_attribute('FSentence', True)
 
 
 class SentimentHighlighter(PR):
