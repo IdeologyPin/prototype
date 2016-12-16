@@ -67,7 +67,8 @@ class SentimentHighlighter(PR):
         :param doc:
         :return:
         '''
-        THRESHOLD=0.6
+        NEG_THRESHOLD = -0.75
+        POS_THRESHOLD = .25
 
         pos=[]
         neg=[]
@@ -75,10 +76,10 @@ class SentimentHighlighter(PR):
             if 'gs_score' in sent.features:
                 score=sent.get_feature('gs_score')
                 mag_score = sent.get_feature('gs_magnitude')
-                if score>THRESHOLD and mag_score and mag_score > 0.5:
+                if score > POS_THRESHOLD and score < 1.0 and mag_score and mag_score > 0.5:
                     ann=Annotation(sent.text, sent.tStart, sent.tEnd, sent.cStart, sent.cEnd, 'PosSentiment',doc)
                     pos.append(ann)
-                elif score< -1*THRESHOLD and mag_score and mag_score > 0.5:
+                elif score < NEG_THRESHOLD and mag_score and mag_score > 0.5:
                     ann = Annotation(sent.text, sent.tStart, sent.tEnd, sent.cStart, sent.cEnd, 'NegSentiment', doc)
                     neg.append(ann)
 
