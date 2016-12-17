@@ -60,7 +60,7 @@ class CustomFeatureExtractor(PR):
 class CustomEntityFeatureExtractor(PR):
 
     def __init__(self, ent_id ):
-        self.ent_id
+        self.ent_id=ent_id
 
     def process(self,doc):
         doc #type: SpacyDoc
