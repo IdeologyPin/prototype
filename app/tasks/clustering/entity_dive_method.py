@@ -28,7 +28,7 @@ def run_entity_dive_method(articles_collection):
     pipe = Pipeline(articles_collection)
     pipe.setPRs(prs).setCorpus(articles_collection)
 
-    result = pipe.process(3)
+    result = pipe.process()
     ent_annots = ent_store.annots
     # kt_annots= kt_store.annots
     # unique_kt= set([kt.text for kt in kt_annots])
@@ -64,9 +64,8 @@ def make_clustering_list_model(clust_dicts):
         ename=ename[0:50]
         centroids = {} # are the clusters in that clustering
         for key, cluster in cluster_set.iteritems():
-
             ename_key = ename + '_' + key
-            centroids[key]=(Centroid(id=ename_key, name=key, tags=cluster['keywords'], node_ids=[]))
+            centroids[key]=(Centroid(id=ename_key, name=key, tags=cluster['keywords'], node_ids=['']))
             for sent in cluster['sentences']:
                 score = sent['score']
                 node = nodes[sent.doc['id']]
@@ -78,8 +77,17 @@ def make_clustering_list_model(clust_dicts):
                     node.scores[ename_key] = [score]
                     node.scores[ename+'_avg']=[score]
                 else:
-                    node.scores.get(ename_key,[]).append(score)
-                    node.scores.get(ename + '_avg', []).append(score)
+                    x_scores=node.scores.get(ename_key)
+                    if x_scores:
+                        x_scores.append(score)
+                    else:
+                        node.scores[ename_key]=[score]
+
+                    avg_scores=node.scores.get(ename + '_avg')
+                    if avg_scores:
+                        avg_scores.append(score)
+                    else:
+                        node.scores[ename + '_avg']= [score]
 
         for node in nodes.itervalues():
             senti_scores=node.scores.get(ename + '_avg', [])
@@ -93,6 +101,7 @@ def make_clustering_list_model(clust_dicts):
                 else:
                     key='neu'
                 centroids[key].node_ids.append(node.article.article_id)
+            node.scores=None
         clustering = ClusteringEmbedded(name=ename + ' -' + 'sentiment based clustering', clusters=centroids.values())
         clusterings.append(clustering)
 
