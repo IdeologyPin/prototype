@@ -82,10 +82,10 @@ def make_clustering_list_model(clust_dicts):
                     node.scores[ename_key].append(score)
                     node.scores[ename + '_avg'].append(score)
 
-        for node in nodes:
+        for node in nodes.itervalues():
             senti_scores=node.scores.get(ename + '_avg')
             if senti_scores:
-                avg_sentiment=sum(senti_scores)/ len(senti_scores)
+                avg_sentiment=sum(senti_scores)/len(senti_scores)
                 node.scores[ename + '_avg']= avg_sentiment
                 if avg_sentiment>= POS_THRESHOLD:
                     key='pos'
@@ -93,7 +93,7 @@ def make_clustering_list_model(clust_dicts):
                     key='neg'
                 else:
                     key='neu'
-                centroids[key].node_ids.append(node.article)
+                centroids[key].node_ids.append(str(node.article))
         clustering = ClusteringEmbedded(name=ename + ' -' + 'sentiment based clustering', clusters=centroids.values())
         clusterings.append(clustering)
 
@@ -125,14 +125,15 @@ def cluster_by_sentiment(sentences, X):
         }
 
 
-    for score, sentence in zip(X, sentences):
-        sentence['score']=score
-        if score >= POS_THRESHOLD:
-            cluster_dict[1]['sentences'].append(sentence)
-        elif score <= NEG_THRESHOLD:
-            cluster_dict[-1]['sentences'].append(sentence)
+    for scores, sentence in zip(X, sentences):
+        senti_score=scores[0]
+        sentence['score']=senti_score
+        if senti_score >= POS_THRESHOLD:
+            cluster_dict['pos']['sentences'].append(sentence)
+        elif senti_score <= NEG_THRESHOLD:
+            cluster_dict['neg']['sentences'].append(sentence)
         else:
-            cluster_dict[0]['sentences'].append(sentence)
+            cluster_dict['neu']['sentences'].append(sentence)
 
     # temp_cluster_keywords[cluster_num] = merge_kwd_counts([temp_cluster_keywords[cluster_num], sent["key_terms"]])
     return cluster_dict

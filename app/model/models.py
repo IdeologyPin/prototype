@@ -83,7 +83,7 @@ class Node(EmbeddedDocument):
     span_type=StringField()
     label = StringField()
     vector = ListField(FloatField())
-    scores = MapField(FloatField())  # centroid_id -> float
+    scores = MapField(DynamicField())  # centroid_id -> float
     link = StringField()
 
 
