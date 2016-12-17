@@ -93,7 +93,7 @@ def make_clustering_list_model(clust_dicts):
                     key='neg'
                 else:
                     key='neu'
-                centroids[key].node_ids.append(str(node.article))
+                centroids[key].node_ids.append(node.article.article_id)
         clustering = ClusteringEmbedded(name=ename + ' -' + 'sentiment based clustering', clusters=centroids.values())
         clusterings.append(clustering)
 
