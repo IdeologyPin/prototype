@@ -61,9 +61,10 @@ def make_clustering_list_model(clust_dicts):
     nodes = defaultdict(lambda: None)
 
     for ename, cluster_set in clust_dicts.iteritems():
-
+        ename=ename[0:50]
         centroids = {} # are the clusters in that clustering
         for key, cluster in cluster_set.iteritems():
+
             ename_key = ename + '_' + key
             centroids[key]=(Centroid(id=ename_key, name=key, tags=cluster['keywords'], node_ids=[]))
             for sent in cluster['sentences']:
@@ -71,19 +72,17 @@ def make_clustering_list_model(clust_dicts):
                 node = nodes[sent.doc['id']]
                 if node == None:
                     article = sent.doc['mongo']
-                    node = Node(article=sent.doc['id'], span_type='Document', scores={},
+                    node = Node(article=sent.doc['id'], span_type='Document', scores=defaultdict(lambda :[]),
                                 label=article.title + " " + article.source, link=article.link)
                     nodes[sent.doc['id']] = node
-                    for clust_key in cluster_set.keys(): #keys are pos, neu, neg
-                        node.scores[ename+'-'+clust_key] = [0]
                     node.scores[ename_key] = [score]
                     node.scores[ename+'_avg']=[score]
                 else:
-                    node.scores[ename_key].append(score)
-                    node.scores[ename + '_avg'].append(score)
+                    node.scores.get(ename_key,[]).append(score)
+                    node.scores.get(ename + '_avg', []).append(score)
 
         for node in nodes.itervalues():
-            senti_scores=node.scores.get(ename + '_avg')
+            senti_scores=node.scores.get(ename + '_avg', [])
             if senti_scores:
                 avg_sentiment=sum(senti_scores)/len(senti_scores)
                 node.scores[ename + '_avg']= avg_sentiment

@@ -95,7 +95,7 @@ def cluster_sentence_vectors(sentences, X, N_CLUSTERS=5):
         # merge keyword dictionaries together
         temp_cluster_keywords[cluster_num] = merge_kwd_counts([temp_cluster_keywords[cluster_num], sent["key_terms"]])
 
-    NUM_KEYWORDS = 10
+    NUM_KEYWORDS = 5
     for cluster_num in temp_cluster_keywords:
         clustered = sorted(temp_cluster_keywords[cluster_num].items(), key=lambda x: x[1])[0:NUM_KEYWORDS]
         cluster_dict[cluster_num]["keywords"] = [x[0] for x in clustered]
@@ -131,7 +131,8 @@ class FV1ClusteringMethod2(ClusteringMethod):
         nodes=defaultdict(lambda :None)
         for key, cluster in clusters.iteritems():
             key=str(key)
-            centroids.append(Centroid(id=key, name=cluster['keywords'][0], tags=cluster['keywords']))
+            name=' '.join(cluster['keywords'])
+            centroids.append(Centroid(id=key, name=name , tags=cluster['keywords']))
             for sent in cluster['sentences']:
                 score=sent['dist_to_centroid']
                 node=nodes[sent.doc['id']]
